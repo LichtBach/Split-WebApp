@@ -10,6 +10,11 @@ export default defineConfig({
             '@': path.resolve(__dirname, './src'),
         },
     },
+    build: {
+        // Build to public_html for Cloudways deployment
+        outDir: 'public_html',
+        emptyOutDir: true,
+    },
     server: {
         port: 5173,
         open: true,
