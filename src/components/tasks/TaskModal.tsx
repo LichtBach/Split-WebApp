@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { format } from 'date-fns'
+import { format, parseISO } from 'date-fns'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Calendar as CalendarIcon, Trash2, X } from 'lucide-react'
 import { Button } from '@/components/ui/button'
@@ -13,9 +13,16 @@ import {
     SelectTrigger,
     SelectValue,
 } from '@/components/ui/select'
+import {
+    Popover,
+    PopoverContent,
+    PopoverTrigger,
+} from '@/components/ui/popover'
+import { Calendar } from '@/components/ui/calendar'
 import { useTaskStore } from '@/store/taskStore'
 import { mockProjects, mockTeamMembers } from '@/services/mockData'
 import type { TaskStatus, TaskPriority } from '@/types'
+import { cn } from '@/lib/utils'
 
 const statusOptions: { value: TaskStatus; label: string; color: string }[] = [
     { value: 'todo', label: 'To Do', color: 'bg-gray-500' },
@@ -333,17 +340,38 @@ export function TaskModal() {
                                     <div className="grid grid-cols-2 gap-4">
                                         <div className="space-y-2">
                                             <Label htmlFor="due_date">Due Date</Label>
-                                            <div className="relative">
-                                                <CalendarIcon className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                                                <Input
-                                                    id="due_date"
-                                                    type="date"
-                                                    value={formData.due_date}
-                                                    onChange={(e) => setFormData({ ...formData, due_date: e.target.value })}
-                                                    disabled={isViewMode}
-                                                    className="pl-9 [color-scheme:dark]"
-                                                />
-                                            </div>
+                                            <Popover>
+                                                <PopoverTrigger asChild>
+                                                    <Button
+                                                        variant="outline"
+                                                        disabled={isViewMode}
+                                                        className={cn(
+                                                            "w-full justify-start text-left font-normal h-10",
+                                                            !formData.due_date && "text-muted-foreground"
+                                                        )}
+                                                    >
+                                                        <CalendarIcon className="mr-2 h-4 w-4" />
+                                                        {formData.due_date ? (
+                                                            format(parseISO(formData.due_date), "PPP")
+                                                        ) : (
+                                                            <span>Pick a date</span>
+                                                        )}
+                                                    </Button>
+                                                </PopoverTrigger>
+                                                <PopoverContent className="w-auto p-0" align="start">
+                                                    <Calendar
+                                                        mode="single"
+                                                        selected={formData.due_date ? parseISO(formData.due_date) : undefined}
+                                                        onSelect={(date) => {
+                                                            setFormData({
+                                                                ...formData,
+                                                                due_date: date ? format(date, 'yyyy-MM-dd') : ''
+                                                            })
+                                                        }}
+                                                        initialFocus
+                                                    />
+                                                </PopoverContent>
+                                            </Popover>
                                         </div>
 
                                         <div className="space-y-2">
