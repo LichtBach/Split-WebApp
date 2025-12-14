@@ -44,20 +44,15 @@ const secondaryNavigation = [
     { name: 'Settings', href: '/settings', icon: Settings },
 ]
 
-// Icon container with glassmorphism effect
-function IconContainer({ icon: Icon, isActive }: { icon: React.ElementType; isActive: boolean }) {
+// Simple icon without container
+function NavIcon({ icon: Icon, isActive }: { icon: React.ElementType; isActive: boolean }) {
     return (
-        <div className={cn(
-            "flex items-center justify-center w-9 h-9 rounded-xl backdrop-blur-sm shadow-lg transition-all duration-200",
+        <Icon className={cn(
+            "h-5 w-5 shrink-0 transition-colors duration-200",
             isActive
-                ? "bg-orange-500 shadow-orange-500/30"
-                : "bg-gray-800/90 dark:bg-gray-200/90 shadow-black/20 dark:shadow-gray-400/20"
-        )}>
-            <Icon className={cn(
-                "h-5 w-5 shrink-0",
-                isActive ? "text-white" : "text-white dark:text-gray-800"
-            )} />
-        </div>
+                ? "text-orange-500"
+                : "text-white dark:text-gray-800"
+        )} />
     )
 }
 
@@ -106,7 +101,7 @@ export function Sidebar() {
                                             sidebarCollapsed && "justify-center px-2"
                                         )}
                                     >
-                                        <IconContainer icon={item.icon} isActive={isActive} />
+                                        <NavIcon icon={item.icon} isActive={isActive} />
                                         {!sidebarCollapsed && <span>{item.name}</span>}
                                     </Link>
                                 )
@@ -151,7 +146,7 @@ export function Sidebar() {
                                             sidebarCollapsed && "justify-center px-2"
                                         )}
                                     >
-                                        <IconContainer icon={item.icon} isActive={isActive} />
+                                        <NavIcon icon={item.icon} isActive={isActive} />
                                         {!sidebarCollapsed && <span>{item.name}</span>}
                                     </Link>
                                 )
@@ -188,7 +183,7 @@ export function Sidebar() {
                                             sidebarCollapsed && "justify-center px-2"
                                         )}
                                     >
-                                        <IconContainer icon={item.icon} isActive={isActive} />
+                                        <NavIcon icon={item.icon} isActive={isActive} />
                                         {!sidebarCollapsed && <span>{item.name}</span>}
                                     </Link>
                                 )
