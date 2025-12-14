@@ -47,12 +47,15 @@ const secondaryNavigation = [
 // Simple icon without container
 function NavIcon({ icon: Icon, isActive }: { icon: React.ElementType; isActive: boolean }) {
     return (
-        <Icon className={cn(
-            "h-5 w-5 shrink-0 transition-colors duration-200",
-            isActive
-                ? "text-orange-500"
-                : "text-white dark:text-gray-800"
-        )} />
+        <Icon
+            strokeWidth={2.5}
+            className={cn(
+                "h-6 w-6 shrink-0 transition-colors duration-200",
+                isActive
+                    ? "text-orange-500"
+                    : "text-gray-200 dark:text-black"
+            )}
+        />
     )
 }
 
