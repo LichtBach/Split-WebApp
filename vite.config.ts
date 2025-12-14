@@ -11,8 +11,8 @@ export default defineConfig({
         },
     },
     build: {
-        // Build to public_html for Cloudways deployment
-        outDir: 'public_html',
+        // Build to dist for Cloudways (webroot is public_html/dist)
+        outDir: 'dist',
         emptyOutDir: true,
     },
     server: {
