@@ -4,9 +4,16 @@ RewriteEngine On
 # Set the base path (adjust if deployed to a subdirectory)
 RewriteBase /
 
-# Redirect HTTP to HTTPS (uncomment in production)
-# RewriteCond %{HTTPS} off
-# RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+# IMPORTANT: Set correct MIME types for JavaScript modules
+<IfModule mod_mime.c>
+    AddType text/javascript .js .mjs
+    AddType text/css .css
+    AddType image/svg+xml .svg
+    AddType application/json .json
+    AddType application/manifest+json .webmanifest
+    AddType font/woff .woff
+    AddType font/woff2 .woff2
+</IfModule>
 
 # Handle SPA routing - serve index.html for all non-file/non-directory requests
 RewriteCond %{REQUEST_FILENAME} !-f
@@ -44,6 +51,7 @@ RewriteRule ^ index.html [L]
     
     # CSS and JavaScript (hashed by Vite, safe to cache long)
     ExpiresByType text/css "access plus 1 year"
+    ExpiresByType text/javascript "access plus 1 year"
     ExpiresByType application/javascript "access plus 1 year"
     
     # Fonts
