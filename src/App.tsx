@@ -3,6 +3,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { router } from './router'
 import { useEffect } from 'react'
 import { useUIStore } from '@/store/uiStore'
+import { ProjectDetailModal } from '@/components/projects/ProjectDetailModal'
 
 // Create a client
 const queryClient = new QueryClient({
@@ -30,6 +31,7 @@ function App() {
         <QueryClientProvider client={queryClient}>
             <ThemeInitializer />
             <RouterProvider router={router} />
+            <ProjectDetailModal />
         </QueryClientProvider>
     )
 }

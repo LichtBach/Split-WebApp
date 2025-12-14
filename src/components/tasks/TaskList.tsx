@@ -64,7 +64,7 @@ function TaskItem({ task, expanded = false, onToggle }: TaskItemProps) {
     return (
         <Card
             className={cn(
-                "transition-all duration-200 hover:shadow-md border-l-4",
+                "transition-transform duration-200 hover:scale-[1.02] origin-left border-l-4 will-change-transform",
                 task.priority === 'urgent' && "border-l-red-500",
                 task.priority === 'high' && "border-l-orange-500",
                 task.priority === 'medium' && "border-l-blue-500",

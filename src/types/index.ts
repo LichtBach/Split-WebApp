@@ -48,11 +48,22 @@ export interface Project {
     end_date?: string;
     budget?: number;
     spent: number;
+    assigned_members?: string[]; // Team member IDs
     created_at: string;
     updated_at: string;
     // Relations
     tasks?: Task[];
     metrics?: Metric[];
+}
+
+export interface ProjectActivity {
+    id: string;
+    project_id: string;
+    user_id: string;
+    user_name: string;
+    action: 'created' | 'updated' | 'commented' | 'status_changed' | 'assigned' | 'completed';
+    description: string;
+    timestamp: string;
 }
 
 export interface ProjectWithStats extends Project {

@@ -1,4 +1,3 @@
-import { Link } from '@tanstack/react-router'
 import { ArrowRight, Calendar, DollarSign } from 'lucide-react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
@@ -7,12 +6,14 @@ import { Button } from '@/components/ui/button'
 import type { Project } from '@/types'
 import { cn, formatCurrency, formatDate, getStatusColor, calculateProgress } from '@/lib/utils'
 import { getProjectTasks } from '@/services/mockData'
+import { useProjectStore } from '@/store/projectStore'
 
 interface ProjectCardProps {
     project: Project
 }
 
 export function ProjectCard({ project }: ProjectCardProps) {
+    const { openProjectDetail } = useProjectStore()
     const tasks = getProjectTasks(project.id)
     const completedTasks = tasks.filter(t => t.status === 'done').length
     const progressPercent = calculateProgress(completedTasks, tasks.length)
@@ -20,8 +21,15 @@ export function ProjectCard({ project }: ProjectCardProps) {
         ? calculateProgress(project.spent, project.budget)
         : 0
 
+    const handleClick = () => {
+        openProjectDetail(project)
+    }
+
     return (
-        <Card className="transition-all duration-200 hover:shadow-lg hover:border-primary/30 group">
+        <Card
+            className="transition-all duration-200 hover:shadow-lg hover:border-primary/30 group cursor-pointer"
+            onClick={handleClick}
+        >
             <CardHeader className="pb-3">
                 <div className="flex items-start justify-between">
                     <div className="space-y-1">
@@ -83,15 +91,17 @@ export function ProjectCard({ project }: ProjectCardProps) {
                 </div>
 
                 {/* Action */}
-                <Link to="/projects/$projectId" params={{ projectId: project.id }}>
-                    <Button
-                        variant="ghost"
-                        className="w-full justify-between group-hover:bg-accent"
-                    >
-                        <span>View Details</span>
-                        <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
-                    </Button>
-                </Link>
+                <Button
+                    variant="ghost"
+                    className="w-full justify-between group-hover:bg-accent"
+                    onClick={(e) => {
+                        e.stopPropagation()
+                        handleClick()
+                    }}
+                >
+                    <span>View Details</span>
+                    <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+                </Button>
             </CardContent>
         </Card>
     )

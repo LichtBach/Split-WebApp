@@ -43,7 +43,7 @@ function TeamMemberCard({ member, compact = false }: TeamMemberCardProps) {
 
     if (compact) {
         return (
-            <div className="flex items-center gap-3 p-3 rounded-lg hover:bg-accent/50 transition-colors">
+            <div className="flex items-center gap-3 p-3 rounded-lg hover:scale-[1.02] transition-transform will-change-transform cursor-pointer">
                 <div className="relative">
                     <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[#667eea] to-[#764ba2] flex items-center justify-center text-white font-medium">
                         {member.name.split(' ').map(n => n[0]).join('')}
@@ -64,7 +64,7 @@ function TeamMemberCard({ member, compact = false }: TeamMemberCardProps) {
     }
 
     return (
-        <Card className="transition-all duration-200 hover:shadow-md">
+        <Card className="transition-transform duration-200 hover:scale-[1.02] will-change-transform">
             <CardContent className="p-4">
                 <div className="flex items-start gap-4">
                     {/* Avatar */}
