@@ -1,14 +1,7 @@
 import { useState, useEffect } from 'react'
 import { format } from 'date-fns'
-import { Calendar as CalendarIcon, Trash2 } from 'lucide-react'
-import {
-    Dialog,
-    DialogContent,
-    DialogHeader,
-    DialogTitle,
-    DialogFooter,
-    DialogDescription,
-} from '@/components/ui/dialog'
+import { motion, AnimatePresence } from 'framer-motion'
+import { Calendar as CalendarIcon, Trash2, X } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -62,6 +55,29 @@ export function TaskModal() {
     })
 
     const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)
+
+    // Prevent body scroll when modal is open
+    useEffect(() => {
+        if (isModalOpen) {
+            document.body.style.overflow = 'hidden'
+        } else {
+            document.body.style.overflow = ''
+        }
+        return () => {
+            document.body.style.overflow = ''
+        }
+    }, [isModalOpen])
+
+    // Close on escape key
+    useEffect(() => {
+        const handleEscape = (e: KeyboardEvent) => {
+            if (e.key === 'Escape') handleClose()
+        }
+        if (isModalOpen) {
+            document.addEventListener('keydown', handleEscape)
+        }
+        return () => document.removeEventListener('keydown', handleEscape)
+    }, [isModalOpen])
 
     // Sync form data with selected task
     useEffect(() => {
@@ -121,231 +137,273 @@ export function TaskModal() {
 
     const isViewMode = modalMode === 'view'
 
+    if (!isModalOpen) return null
+
     return (
-        <Dialog open={isModalOpen} onOpenChange={handleClose}>
-            <DialogContent className="sm:max-w-[600px]">
-                <DialogHeader>
-                    <DialogTitle>
-                        {modalMode === 'create' && 'Create New Task'}
-                        {modalMode === 'edit' && 'Edit Task'}
-                        {modalMode === 'view' && 'Task Details'}
-                    </DialogTitle>
-                    <DialogDescription>
-                        {modalMode === 'create' && 'Add a new task to your project.'}
-                        {modalMode === 'edit' && 'Make changes to the task details.'}
-                        {modalMode === 'view' && 'View task information.'}
-                    </DialogDescription>
-                </DialogHeader>
+        <AnimatePresence>
+            {isModalOpen && (
+                <>
+                    {/* Backdrop */}
+                    <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        onClick={handleClose}
+                        className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm"
+                    />
 
-                {showDeleteConfirm ? (
-                    <div className="py-6 text-center space-y-4">
-                        <div className="mx-auto w-12 h-12 rounded-full bg-destructive/10 flex items-center justify-center">
-                            <Trash2 className="h-6 w-6 text-destructive" />
-                        </div>
-                        <div>
-                            <h3 className="font-semibold text-lg">Delete Task?</h3>
-                            <p className="text-muted-foreground text-sm">
-                                Are you sure you want to delete "{selectedTask?.title}"? This action cannot be undone.
-                            </p>
-                        </div>
-                        <div className="flex gap-3 justify-center">
-                            <Button variant="outline" onClick={() => setShowDeleteConfirm(false)}>
-                                Cancel
-                            </Button>
-                            <Button variant="destructive" onClick={handleDelete}>
-                                Delete Task
-                            </Button>
-                        </div>
-                    </div>
-                ) : (
-                    <form onSubmit={handleSubmit} className="space-y-4">
-                        {/* Title */}
-                        <div className="space-y-2">
-                            <Label htmlFor="title">Title *</Label>
-                            <Input
-                                id="title"
-                                value={formData.title}
-                                onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                                placeholder="Task title..."
-                                disabled={isViewMode}
-                                required
-                            />
-                        </div>
-
-                        {/* Description */}
-                        <div className="space-y-2">
-                            <Label htmlFor="description">Description</Label>
-                            <Textarea
-                                id="description"
-                                value={formData.description}
-                                onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                                placeholder="Task description..."
-                                disabled={isViewMode}
-                                rows={3}
-                            />
-                        </div>
-
-                        {/* Project & Assignee Row */}
-                        <div className="grid grid-cols-2 gap-4">
-                            <div className="space-y-2">
-                                <Label htmlFor="project">Project</Label>
-                                <Select
-                                    value={formData.project_id}
-                                    onValueChange={(value) => setFormData({ ...formData, project_id: value })}
-                                    disabled={isViewMode}
-                                >
-                                    <SelectTrigger>
-                                        <SelectValue placeholder="Select project" />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        {mockProjects.map((project) => (
-                                            <SelectItem key={project.id} value={project.id}>
-                                                {project.name}
-                                            </SelectItem>
-                                        ))}
-                                    </SelectContent>
-                                </Select>
-                            </div>
-
-                            <div className="space-y-2">
-                                <Label htmlFor="assignee">Assignee</Label>
-                                <Select
-                                    value={formData.assigned_to || 'unassigned'}
-                                    onValueChange={(value) => setFormData({ ...formData, assigned_to: value === 'unassigned' ? '' : value })}
-                                    disabled={isViewMode}
-                                >
-                                    <SelectTrigger>
-                                        <SelectValue placeholder="Unassigned" />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        <SelectItem value="unassigned">Unassigned</SelectItem>
-                                        {mockTeamMembers.map((member) => (
-                                            <SelectItem key={member.id} value={member.name}>
-                                                {member.name}
-                                            </SelectItem>
-                                        ))}
-                                    </SelectContent>
-                                </Select>
-                            </div>
-                        </div>
-
-                        {/* Status & Priority Row */}
-                        <div className="grid grid-cols-2 gap-4">
-                            <div className="space-y-2">
-                                <Label htmlFor="status">Status</Label>
-                                <Select
-                                    value={formData.status}
-                                    onValueChange={(value) => setFormData({ ...formData, status: value as TaskStatus })}
-                                    disabled={isViewMode}
-                                >
-                                    <SelectTrigger>
-                                        <SelectValue />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        {statusOptions.map((option) => (
-                                            <SelectItem key={option.value} value={option.value}>
-                                                <div className="flex items-center gap-2">
-                                                    <div className={`w-2 h-2 rounded-full ${option.color}`} />
-                                                    {option.label}
-                                                </div>
-                                            </SelectItem>
-                                        ))}
-                                    </SelectContent>
-                                </Select>
-                            </div>
-
-                            <div className="space-y-2">
-                                <Label htmlFor="priority">Priority</Label>
-                                <Select
-                                    value={formData.priority}
-                                    onValueChange={(value) => setFormData({ ...formData, priority: value as TaskPriority })}
-                                    disabled={isViewMode}
-                                >
-                                    <SelectTrigger>
-                                        <SelectValue />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        {priorityOptions.map((option) => (
-                                            <SelectItem key={option.value} value={option.value}>
-                                                <div className="flex items-center gap-2">
-                                                    <div className={`w-2 h-2 rounded-full ${option.color}`} />
-                                                    {option.label}
-                                                </div>
-                                            </SelectItem>
-                                        ))}
-                                    </SelectContent>
-                                </Select>
-                            </div>
-                        </div>
-
-                        {/* Due Date & Client Visibility */}
-                        <div className="grid grid-cols-2 gap-4">
-                            <div className="space-y-2">
-                                <Label htmlFor="due_date">Due Date</Label>
-                                <div className="relative">
-                                    <CalendarIcon className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                                    <Input
-                                        id="due_date"
-                                        type="date"
-                                        value={formData.due_date}
-                                        onChange={(e) => setFormData({ ...formData, due_date: e.target.value })}
-                                        disabled={isViewMode}
-                                        className="pl-9"
-                                    />
+                    {/* Modal - Properly centered with flexbox */}
+                    <motion.div
+                        initial={{ opacity: 0, scale: 0.95 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        exit={{ opacity: 0, scale: 0.95 }}
+                        transition={{ duration: 0.2, ease: 'easeOut' }}
+                        className="fixed inset-0 z-50 flex items-center justify-center p-4"
+                    >
+                        <div
+                            className="relative w-full max-w-[600px] max-h-[90vh] overflow-y-auto rounded-2xl border border-border/50 bg-card/95 backdrop-blur-lg shadow-2xl p-6"
+                            onClick={(e) => e.stopPropagation()}
+                        >
+                            {/* Header */}
+                            <div className="flex items-start justify-between mb-4">
+                                <div>
+                                    <h2 className="text-lg font-semibold text-foreground">
+                                        {modalMode === 'create' && 'Create New Task'}
+                                        {modalMode === 'edit' && 'Edit Task'}
+                                        {modalMode === 'view' && 'Task Details'}
+                                    </h2>
+                                    <p className="text-sm text-muted-foreground">
+                                        {modalMode === 'create' && 'Add a new task to your project.'}
+                                        {modalMode === 'edit' && 'Make changes to the task details.'}
+                                        {modalMode === 'view' && 'View task information.'}
+                                    </p>
                                 </div>
-                            </div>
-
-                            <div className="space-y-2">
-                                <Label>Client Visibility</Label>
-                                <div className="flex items-center gap-2 h-10">
-                                    <input
-                                        type="checkbox"
-                                        id="client_visible"
-                                        checked={formData.client_visible}
-                                        onChange={(e) => setFormData({ ...formData, client_visible: e.target.checked })}
-                                        disabled={isViewMode}
-                                        className="h-4 w-4 rounded border-gray-300"
-                                    />
-                                    <Label htmlFor="client_visible" className="text-sm font-normal">
-                                        Visible to client
-                                    </Label>
-                                </div>
-                            </div>
-                        </div>
-
-                        {/* Created/Updated info for view/edit mode */}
-                        {(modalMode === 'view' || modalMode === 'edit') && selectedTask && (
-                            <div className="flex items-center gap-4 text-xs text-muted-foreground pt-2 border-t">
-                                <span>Created: {format(new Date(selectedTask.created_at), 'MMM d, yyyy')}</span>
-                                <span>•</span>
-                                <span>Updated: {format(new Date(selectedTask.updated_at), 'MMM d, yyyy')}</span>
-                            </div>
-                        )}
-
-                        <DialogFooter className="gap-2">
-                            {modalMode === 'edit' && (
                                 <Button
-                                    type="button"
-                                    variant="destructive"
-                                    onClick={() => setShowDeleteConfirm(true)}
-                                    className="mr-auto"
+                                    variant="ghost"
+                                    size="icon"
+                                    onClick={handleClose}
+                                    className="text-muted-foreground hover:text-foreground -mt-1 -mr-2"
                                 >
-                                    <Trash2 className="h-4 w-4 mr-2" />
-                                    Delete
+                                    <X className="h-5 w-5" />
                                 </Button>
+                            </div>
+
+                            {showDeleteConfirm ? (
+                                <div className="py-6 text-center space-y-4">
+                                    <div className="mx-auto w-12 h-12 rounded-full bg-destructive/10 flex items-center justify-center">
+                                        <Trash2 className="h-6 w-6 text-destructive" />
+                                    </div>
+                                    <div>
+                                        <h3 className="font-semibold text-lg">Delete Task?</h3>
+                                        <p className="text-muted-foreground text-sm">
+                                            Are you sure you want to delete "{selectedTask?.title}"? This action cannot be undone.
+                                        </p>
+                                    </div>
+                                    <div className="flex gap-3 justify-center">
+                                        <Button variant="outline" onClick={() => setShowDeleteConfirm(false)}>
+                                            Cancel
+                                        </Button>
+                                        <Button variant="destructive" onClick={handleDelete}>
+                                            Delete Task
+                                        </Button>
+                                    </div>
+                                </div>
+                            ) : (
+                                <form onSubmit={handleSubmit} className="space-y-4">
+                                    {/* Title */}
+                                    <div className="space-y-2">
+                                        <Label htmlFor="title">Title *</Label>
+                                        <Input
+                                            id="title"
+                                            value={formData.title}
+                                            onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+                                            placeholder="Task title..."
+                                            disabled={isViewMode}
+                                            required
+                                        />
+                                    </div>
+
+                                    {/* Description */}
+                                    <div className="space-y-2">
+                                        <Label htmlFor="description">Description</Label>
+                                        <Textarea
+                                            id="description"
+                                            value={formData.description}
+                                            onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                                            placeholder="Task description..."
+                                            disabled={isViewMode}
+                                            rows={3}
+                                        />
+                                    </div>
+
+                                    {/* Project & Assignee Row */}
+                                    <div className="grid grid-cols-2 gap-4">
+                                        <div className="space-y-2">
+                                            <Label htmlFor="project">Project</Label>
+                                            <Select
+                                                value={formData.project_id}
+                                                onValueChange={(value) => setFormData({ ...formData, project_id: value })}
+                                                disabled={isViewMode}
+                                            >
+                                                <SelectTrigger>
+                                                    <SelectValue placeholder="Select project" />
+                                                </SelectTrigger>
+                                                <SelectContent>
+                                                    {mockProjects.map((project) => (
+                                                        <SelectItem key={project.id} value={project.id}>
+                                                            {project.name}
+                                                        </SelectItem>
+                                                    ))}
+                                                </SelectContent>
+                                            </Select>
+                                        </div>
+
+                                        <div className="space-y-2">
+                                            <Label htmlFor="assignee">Assignee</Label>
+                                            <Select
+                                                value={formData.assigned_to || 'unassigned'}
+                                                onValueChange={(value) => setFormData({ ...formData, assigned_to: value === 'unassigned' ? '' : value })}
+                                                disabled={isViewMode}
+                                            >
+                                                <SelectTrigger>
+                                                    <SelectValue placeholder="Unassigned" />
+                                                </SelectTrigger>
+                                                <SelectContent>
+                                                    <SelectItem value="unassigned">Unassigned</SelectItem>
+                                                    {mockTeamMembers.map((member) => (
+                                                        <SelectItem key={member.id} value={member.name}>
+                                                            {member.name}
+                                                        </SelectItem>
+                                                    ))}
+                                                </SelectContent>
+                                            </Select>
+                                        </div>
+                                    </div>
+
+                                    {/* Status & Priority Row */}
+                                    <div className="grid grid-cols-2 gap-4">
+                                        <div className="space-y-2">
+                                            <Label htmlFor="status">Status</Label>
+                                            <Select
+                                                value={formData.status}
+                                                onValueChange={(value) => setFormData({ ...formData, status: value as TaskStatus })}
+                                                disabled={isViewMode}
+                                            >
+                                                <SelectTrigger>
+                                                    <SelectValue />
+                                                </SelectTrigger>
+                                                <SelectContent>
+                                                    {statusOptions.map((option) => (
+                                                        <SelectItem key={option.value} value={option.value}>
+                                                            <div className="flex items-center gap-2">
+                                                                <div className={`w-2 h-2 rounded-full ${option.color}`} />
+                                                                {option.label}
+                                                            </div>
+                                                        </SelectItem>
+                                                    ))}
+                                                </SelectContent>
+                                            </Select>
+                                        </div>
+
+                                        <div className="space-y-2">
+                                            <Label htmlFor="priority">Priority</Label>
+                                            <Select
+                                                value={formData.priority}
+                                                onValueChange={(value) => setFormData({ ...formData, priority: value as TaskPriority })}
+                                                disabled={isViewMode}
+                                            >
+                                                <SelectTrigger>
+                                                    <SelectValue />
+                                                </SelectTrigger>
+                                                <SelectContent>
+                                                    {priorityOptions.map((option) => (
+                                                        <SelectItem key={option.value} value={option.value}>
+                                                            <div className="flex items-center gap-2">
+                                                                <div className={`w-2 h-2 rounded-full ${option.color}`} />
+                                                                {option.label}
+                                                            </div>
+                                                        </SelectItem>
+                                                    ))}
+                                                </SelectContent>
+                                            </Select>
+                                        </div>
+                                    </div>
+
+                                    {/* Due Date & Client Visibility */}
+                                    <div className="grid grid-cols-2 gap-4">
+                                        <div className="space-y-2">
+                                            <Label htmlFor="due_date">Due Date</Label>
+                                            <div className="relative">
+                                                <CalendarIcon className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                                                <Input
+                                                    id="due_date"
+                                                    type="date"
+                                                    value={formData.due_date}
+                                                    onChange={(e) => setFormData({ ...formData, due_date: e.target.value })}
+                                                    disabled={isViewMode}
+                                                    className="pl-9 [color-scheme:dark]"
+                                                />
+                                            </div>
+                                        </div>
+
+                                        <div className="space-y-2">
+                                            <Label>Client Visibility</Label>
+                                            <div className="flex items-center gap-2 h-10">
+                                                <input
+                                                    type="checkbox"
+                                                    id="client_visible"
+                                                    checked={formData.client_visible}
+                                                    onChange={(e) => setFormData({ ...formData, client_visible: e.target.checked })}
+                                                    disabled={isViewMode}
+                                                    className="h-4 w-4 rounded border-gray-300 accent-orange-500"
+                                                />
+                                                <Label htmlFor="client_visible" className="text-sm font-normal">
+                                                    Visible to client
+                                                </Label>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {/* Created/Updated info for view/edit mode */}
+                                    {(modalMode === 'view' || modalMode === 'edit') && selectedTask && (
+                                        <div className="flex items-center gap-4 text-xs text-muted-foreground pt-2 border-t">
+                                            <span>Created: {format(new Date(selectedTask.created_at), 'MMM d, yyyy')}</span>
+                                            <span>•</span>
+                                            <span>Updated: {format(new Date(selectedTask.updated_at), 'MMM d, yyyy')}</span>
+                                        </div>
+                                    )}
+
+                                    {/* Footer */}
+                                    <div className="flex justify-between pt-4 border-t">
+                                        <div>
+                                            {modalMode === 'edit' && (
+                                                <Button
+                                                    type="button"
+                                                    variant="destructive"
+                                                    onClick={() => setShowDeleteConfirm(true)}
+                                                >
+                                                    <Trash2 className="h-4 w-4 mr-2" />
+                                                    Delete
+                                                </Button>
+                                            )}
+                                        </div>
+                                        <div className="flex gap-2">
+                                            <Button type="button" variant="outline" onClick={handleClose}>
+                                                {isViewMode ? 'Close' : 'Cancel'}
+                                            </Button>
+                                            {!isViewMode && (
+                                                <Button type="submit" variant="gradient">
+                                                    {modalMode === 'create' ? 'Create Task' : 'Save Changes'}
+                                                </Button>
+                                            )}
+                                        </div>
+                                    </div>
+                                </form>
                             )}
-                            <Button type="button" variant="outline" onClick={handleClose}>
-                                {isViewMode ? 'Close' : 'Cancel'}
-                            </Button>
-                            {!isViewMode && (
-                                <Button type="submit" variant="gradient">
-                                    {modalMode === 'create' ? 'Create Task' : 'Save Changes'}
-                                </Button>
-                            )}
-                        </DialogFooter>
-                    </form>
-                )}
-            </DialogContent>
-        </Dialog>
+                        </div>
+                    </motion.div>
+                </>
+            )}
+        </AnimatePresence>
     )
 }

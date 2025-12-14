@@ -74,7 +74,7 @@ function TaskItem({ task, expanded = false, onToggle }: TaskItemProps) {
             <CardContent className="p-0">
                 {/* Task Header - Always Visible */}
                 <div
-                    className="flex items-center gap-3 p-4 cursor-pointer hover:bg-accent/50 transition-colors"
+                    className="flex items-center gap-3 p-4 cursor-pointer"
                     onClick={onToggle}
                 >
                     {/* Expand Icon */}
