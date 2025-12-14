@@ -44,6 +44,23 @@ const secondaryNavigation = [
     { name: 'Settings', href: '/settings', icon: Settings },
 ]
 
+// Icon container with glassmorphism effect
+function IconContainer({ icon: Icon, isActive }: { icon: React.ElementType; isActive: boolean }) {
+    return (
+        <div className={cn(
+            "flex items-center justify-center w-9 h-9 rounded-xl backdrop-blur-sm shadow-lg transition-all duration-200",
+            isActive
+                ? "bg-orange-500 shadow-orange-500/30"
+                : "bg-gray-800/90 dark:bg-gray-200/90 shadow-black/20 dark:shadow-gray-400/20"
+        )}>
+            <Icon className={cn(
+                "h-5 w-5 shrink-0",
+                isActive ? "text-white" : "text-white dark:text-gray-800"
+            )} />
+        </div>
+    )
+}
+
 export function Sidebar() {
     const location = useLocation()
     const { sidebarCollapsed, setSidebarCollapsed } = useUIStore()
@@ -54,18 +71,18 @@ export function Sidebar() {
             <div className="p-3 h-full">
                 <div
                     className={cn(
-                        "relative flex flex-col h-full rounded-2xl bg-white/95 dark:bg-slate-800/95 backdrop-blur-lg shadow-xl border border-gray-200/50 dark:border-slate-700/50 transition-all duration-300",
-                        sidebarCollapsed ? "w-[70px]" : "w-[250px]"
+                        "relative flex flex-col h-full rounded-2xl bg-gray-900 dark:bg-white backdrop-blur-lg shadow-2xl border border-gray-700/50 dark:border-gray-300/50 transition-all duration-300",
+                        sidebarCollapsed ? "w-[76px]" : "w-[260px]"
                     )}
                 >
                     {/* Logo */}
-                    <div className="flex h-16 items-center border-b border-gray-200/50 dark:border-slate-700/50 px-4">
+                    <div className="flex h-16 items-center border-b border-gray-700/50 dark:border-gray-300/50 px-4">
                         <Link to="/dashboard" className="flex items-center gap-3">
-                            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-orange-500 to-orange-600 shadow-lg shadow-orange-500/25">
+                            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-orange-500 to-orange-600 shadow-lg shadow-orange-500/30">
                                 <span className="text-sm font-bold text-white">AI</span>
                             </div>
                             {!sidebarCollapsed && (
-                                <span className="font-semibold text-lg text-gray-800 dark:text-white">
+                                <span className="font-semibold text-lg text-white dark:text-gray-800">
                                     Receptionist
                                 </span>
                             )}
@@ -74,7 +91,7 @@ export function Sidebar() {
 
                     {/* Navigation */}
                     <ScrollArea className="flex-1 py-4">
-                        <nav className="space-y-1 px-3">
+                        <nav className="space-y-1.5 px-3">
                             {navigation.map((item) => {
                                 const isActive = location.pathname === item.href
                                 const NavItem = (
@@ -82,14 +99,14 @@ export function Sidebar() {
                                         key={item.name}
                                         to={item.href}
                                         className={cn(
-                                            "flex items-center gap-3 rounded-xl px-3 py-3 text-sm font-medium transition-all duration-200",
+                                            "flex items-center gap-3 rounded-xl px-2.5 py-2 text-sm font-medium transition-all duration-200",
                                             isActive
-                                                ? "bg-orange-500/10 text-orange-600 dark:text-orange-400 border border-orange-500/20 shadow-sm"
-                                                : "text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-slate-700",
+                                                ? "bg-orange-500/15 text-orange-400 dark:text-orange-600"
+                                                : "text-gray-300 dark:text-gray-600 hover:bg-white/5 dark:hover:bg-gray-100 hover:text-white dark:hover:text-gray-900",
                                             sidebarCollapsed && "justify-center px-2"
                                         )}
                                     >
-                                        <item.icon className="h-6 w-6 shrink-0" />
+                                        <IconContainer icon={item.icon} isActive={isActive} />
                                         {!sidebarCollapsed && <span>{item.name}</span>}
                                     </Link>
                                 )
@@ -109,17 +126,17 @@ export function Sidebar() {
                             })}
                         </nav>
 
-                        <Separator className="my-4 bg-gray-200/50 dark:bg-slate-700/50" />
+                        <Separator className="my-4 bg-gray-700/50 dark:bg-gray-300/50" />
 
                         {/* Admin Section */}
                         {!sidebarCollapsed && (
                             <div className="px-4 mb-2">
-                                <span className="text-xs font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wider">
+                                <span className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                                     Agency Admin
                                 </span>
                             </div>
                         )}
-                        <nav className="space-y-1 px-3">
+                        <nav className="space-y-1.5 px-3">
                             {adminNavigation.map((item) => {
                                 const isActive = location.pathname === item.href
                                 const NavItem = (
@@ -127,14 +144,14 @@ export function Sidebar() {
                                         key={item.name}
                                         to={item.href}
                                         className={cn(
-                                            "flex items-center gap-3 rounded-xl px-3 py-3 text-sm font-medium transition-all duration-200",
+                                            "flex items-center gap-3 rounded-xl px-2.5 py-2 text-sm font-medium transition-all duration-200",
                                             isActive
-                                                ? "bg-orange-500/10 text-orange-600 dark:text-orange-400"
-                                                : "text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-slate-700",
+                                                ? "bg-orange-500/15 text-orange-400 dark:text-orange-600"
+                                                : "text-gray-300 dark:text-gray-600 hover:bg-white/5 dark:hover:bg-gray-100 hover:text-white dark:hover:text-gray-900",
                                             sidebarCollapsed && "justify-center px-2"
                                         )}
                                     >
-                                        <item.icon className="h-6 w-6 shrink-0" />
+                                        <IconContainer icon={item.icon} isActive={isActive} />
                                         {!sidebarCollapsed && <span>{item.name}</span>}
                                     </Link>
                                 )
@@ -154,9 +171,9 @@ export function Sidebar() {
                             })}
                         </nav>
 
-                        <Separator className="my-4 bg-gray-200/50 dark:bg-slate-700/50" />
+                        <Separator className="my-4 bg-gray-700/50 dark:bg-gray-300/50" />
 
-                        <nav className="space-y-1 px-3">
+                        <nav className="space-y-1.5 px-3">
                             {secondaryNavigation.map((item) => {
                                 const isActive = location.pathname === item.href
                                 const NavItem = (
@@ -164,14 +181,14 @@ export function Sidebar() {
                                         key={item.name}
                                         to={item.href}
                                         className={cn(
-                                            "flex items-center gap-3 rounded-xl px-3 py-3 text-sm font-medium transition-all duration-200",
+                                            "flex items-center gap-3 rounded-xl px-2.5 py-2 text-sm font-medium transition-all duration-200",
                                             isActive
-                                                ? "bg-orange-500/10 text-orange-600 dark:text-orange-400"
-                                                : "text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-slate-700",
+                                                ? "bg-orange-500/15 text-orange-400 dark:text-orange-600"
+                                                : "text-gray-300 dark:text-gray-600 hover:bg-white/5 dark:hover:bg-gray-100 hover:text-white dark:hover:text-gray-900",
                                             sidebarCollapsed && "justify-center px-2"
                                         )}
                                     >
-                                        <item.icon className="h-6 w-6 shrink-0" />
+                                        <IconContainer icon={item.icon} isActive={isActive} />
                                         {!sidebarCollapsed && <span>{item.name}</span>}
                                     </Link>
                                 )
@@ -193,13 +210,13 @@ export function Sidebar() {
                     </ScrollArea>
 
                     {/* Collapse Button */}
-                    <div className="border-t border-gray-200/50 dark:border-slate-700/50 p-3">
+                    <div className="border-t border-gray-700/50 dark:border-gray-300/50 p-3">
                         <Button
                             variant="ghost"
                             size="sm"
                             onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
                             className={cn(
-                                "w-full justify-center text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-slate-700",
+                                "w-full justify-center text-gray-400 dark:text-gray-600 hover:bg-white/10 dark:hover:bg-gray-100 hover:text-white dark:hover:text-gray-900",
                                 !sidebarCollapsed && "justify-start"
                             )}
                         >
