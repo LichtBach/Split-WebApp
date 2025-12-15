@@ -1,3 +1,4 @@
+import { useNavigate } from '@tanstack/react-router'
 import { Bell, Moon, Sun, LogOut, User as UserIcon, Settings } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
@@ -21,6 +22,16 @@ interface HeaderProps {
 export function Header({ title, subtitle }: HeaderProps) {
     const { user, logout } = useAuthStore()
     const { theme, toggleTheme } = useUIStore()
+    const navigate = useNavigate()
+
+    const handleLogout = async () => {
+        await logout()
+        navigate({ to: '/login' })
+    }
+
+    const handleSettingsClick = () => {
+        navigate({ to: '/settings' })
+    }
 
     return (
         <header className="flex h-16 items-center justify-between border-b bg-card/80 backdrop-blur-sm px-6">
@@ -72,7 +83,7 @@ export function Header({ title, subtitle }: HeaderProps) {
                         >
                             <Avatar className="h-9 w-9">
                                 <AvatarImage src={user?.avatar_url} alt={user?.agency_name} />
-                                <AvatarFallback className="bg-gradient-to-br from-[#667eea] to-[#764ba2] text-white">
+                                <AvatarFallback className="bg-gradient-to-br from-orange-500 to-orange-600 text-white">
                                     {user?.agency_name ? getInitials(user.agency_name) : 'U'}
                                 </AvatarFallback>
                             </Avatar>
@@ -90,16 +101,16 @@ export function Header({ title, subtitle }: HeaderProps) {
                             </div>
                         </DropdownMenuLabel>
                         <DropdownMenuSeparator />
-                        <DropdownMenuItem>
+                        <DropdownMenuItem onClick={handleSettingsClick}>
                             <UserIcon className="mr-2 h-4 w-4" />
                             <span>Profile</span>
                         </DropdownMenuItem>
-                        <DropdownMenuItem>
+                        <DropdownMenuItem onClick={handleSettingsClick}>
                             <Settings className="mr-2 h-4 w-4" />
                             <span>Settings</span>
                         </DropdownMenuItem>
                         <DropdownMenuSeparator />
-                        <DropdownMenuItem onClick={logout} className="text-destructive focus:text-destructive">
+                        <DropdownMenuItem onClick={handleLogout} className="text-destructive focus:text-destructive">
                             <LogOut className="mr-2 h-4 w-4" />
                             <span>Log out</span>
                         </DropdownMenuItem>
