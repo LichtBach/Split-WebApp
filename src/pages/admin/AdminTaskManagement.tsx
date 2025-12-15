@@ -77,8 +77,18 @@ function TaskRow({ task, client }: TaskRowProps) {
     const project = mockProjects.find(p => p.id === task.project_id)
     const isClientVisible = task.client_visible !== false
 
+    const priorityColors: Record<string, string> = {
+        low: 'border-l-gray-400',
+        medium: 'border-l-blue-500',
+        high: 'border-l-orange-500',
+        urgent: 'border-l-red-500',
+    }
+
     return (
-        <div className="flex items-center gap-3 p-3 border-b last:border-0 hover:bg-accent/30 transition-colors group">
+        <div className={cn(
+            "flex items-center gap-3 p-3 border-b last:border-0 transition-transform duration-200 hover:scale-[1.01] origin-left group border-l-4",
+            priorityColors[task.priority] || 'border-l-gray-400'
+        )}>
             {/* Drag Handle */}
             <div className="opacity-0 group-hover:opacity-100 cursor-grab">
                 <GripVertical className="h-4 w-4 text-muted-foreground" />

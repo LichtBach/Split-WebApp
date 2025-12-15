@@ -3,7 +3,7 @@ import { useNavigate, Link } from '@tanstack/react-router'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
-import { Mail, Lock, Eye, EyeOff, AlertCircle } from 'lucide-react'
+import { Mail, Lock, Eye, EyeOff, Building2, AlertCircle } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -11,43 +11,41 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { useAuthStore } from '@/store/authStore'
 import { hasSupabaseCredentials } from '@/services/supabase'
 
-const loginSchema = z.object({
+const signupSchema = z.object({
+    agencyName: z.string().min(2, 'Agency name must be at least 2 characters'),
     email: z.string().email('Please enter a valid email address'),
-    password: z.string().min(6, 'Password must be at least 6 characters'),
+    password: z.string().min(8, 'Password must be at least 8 characters'),
+    confirmPassword: z.string(),
+}).refine((data) => data.password === data.confirmPassword, {
+    message: "Passwords don't match",
+    path: ["confirmPassword"],
 })
 
-type LoginFormData = z.infer<typeof loginSchema>
+type SignupFormData = z.infer<typeof signupSchema>
 
-export function LoginPage() {
+export function SignupPage() {
     const [showPassword, setShowPassword] = useState(false)
+    const [showConfirmPassword, setShowConfirmPassword] = useState(false)
     const navigate = useNavigate()
-    const { login, loginWithGoogle, isLoading, error, setError } = useAuthStore()
+    const { signup, loginWithGoogle, isLoading, error, setError } = useAuthStore()
 
     const {
         register,
         handleSubmit,
         formState: { errors },
-    } = useForm<LoginFormData>({
-        resolver: zodResolver(loginSchema),
-        defaultValues: {
-            email: hasSupabaseCredentials ? '' : 'demo@agency.com',
-            password: hasSupabaseCredentials ? '' : 'demo123',
-        },
+    } = useForm<SignupFormData>({
+        resolver: zodResolver(signupSchema),
     })
 
-    const onSubmit = async (data: LoginFormData) => {
-        try {
-            await login(data.email, data.password)
-            const authState = useAuthStore.getState()
-            if (authState.isAuthenticated) {
-                navigate({ to: '/dashboard' })
-            }
-        } catch (error) {
-            console.error('Login failed:', error)
+    const onSubmit = async (data: SignupFormData) => {
+        await signup(data.email, data.password, data.agencyName)
+        const authState = useAuthStore.getState()
+        if (authState.isAuthenticated) {
+            navigate({ to: '/dashboard' })
         }
     }
 
-    const handleGoogleLogin = async () => {
+    const handleGoogleSignup = async () => {
         setError(null)
         await loginWithGoogle()
     }
@@ -68,9 +66,9 @@ export function LoginPage() {
 
                 <Card className="border-0 shadow-xl glass">
                     <CardHeader className="text-center pb-4">
-                        <CardTitle className="text-2xl">Welcome Back</CardTitle>
+                        <CardTitle className="text-2xl">Create Account</CardTitle>
                         <CardDescription>
-                            Sign in to your dashboard to continue
+                            Get started with your AI receptionist dashboard
                         </CardDescription>
                     </CardHeader>
                     <CardContent className="space-y-6">
@@ -82,13 +80,13 @@ export function LoginPage() {
                             </div>
                         )}
 
-                        {/* Google Sign In */}
+                        {/* Google Sign Up */}
                         <Button
                             type="button"
                             variant="outline"
                             size="lg"
                             className="w-full"
-                            onClick={handleGoogleLogin}
+                            onClick={handleGoogleSignup}
                             disabled={isLoading || !hasSupabaseCredentials}
                         >
                             <svg className="mr-2 h-5 w-5" viewBox="0 0 24 24">
@@ -122,6 +120,24 @@ export function LoginPage() {
                         </div>
 
                         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+                            {/* Agency Name */}
+                            <div className="space-y-2">
+                                <Label htmlFor="agencyName">Agency Name</Label>
+                                <div className="relative">
+                                    <Building2 className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                                    <Input
+                                        id="agencyName"
+                                        type="text"
+                                        placeholder="Your Agency"
+                                        className="pl-10"
+                                        {...register('agencyName')}
+                                    />
+                                </div>
+                                {errors.agencyName && (
+                                    <p className="text-sm text-destructive">{errors.agencyName.message}</p>
+                                )}
+                            </div>
+
                             {/* Email */}
                             <div className="space-y-2">
                                 <Label htmlFor="email">Email</Label>
@@ -142,12 +158,7 @@ export function LoginPage() {
 
                             {/* Password */}
                             <div className="space-y-2">
-                                <div className="flex items-center justify-between">
-                                    <Label htmlFor="password">Password</Label>
-                                    <a href="#" className="text-sm text-primary hover:underline">
-                                        Forgot password?
-                                    </a>
-                                </div>
+                                <Label htmlFor="password">Password</Label>
                                 <div className="relative">
                                     <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                                     <Input
@@ -174,6 +185,35 @@ export function LoginPage() {
                                 )}
                             </div>
 
+                            {/* Confirm Password */}
+                            <div className="space-y-2">
+                                <Label htmlFor="confirmPassword">Confirm Password</Label>
+                                <div className="relative">
+                                    <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                                    <Input
+                                        id="confirmPassword"
+                                        type={showConfirmPassword ? 'text' : 'password'}
+                                        placeholder="••••••••"
+                                        className="pl-10 pr-10"
+                                        {...register('confirmPassword')}
+                                    />
+                                    <button
+                                        type="button"
+                                        onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                                        className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                                    >
+                                        {showConfirmPassword ? (
+                                            <EyeOff className="h-4 w-4" />
+                                        ) : (
+                                            <Eye className="h-4 w-4" />
+                                        )}
+                                    </button>
+                                </div>
+                                {errors.confirmPassword && (
+                                    <p className="text-sm text-destructive">{errors.confirmPassword.message}</p>
+                                )}
+                            </div>
+
                             {/* Submit */}
                             <Button
                                 type="submit"
@@ -181,27 +221,25 @@ export function LoginPage() {
                                 size="lg"
                                 className="w-full"
                                 isLoading={isLoading}
+                                disabled={!hasSupabaseCredentials}
                             >
-                                Sign In
+                                Create Account
                             </Button>
-                        </form>
 
-                        {/* Demo Notice */}
-                        {!hasSupabaseCredentials && (
-                            <div className="p-4 rounded-lg bg-muted/50 border border-border">
+                            {!hasSupabaseCredentials && (
                                 <p className="text-xs text-center text-muted-foreground">
-                                    <strong>Demo Mode:</strong> Click Sign In to access the dashboard with sample data.
+                                    Signup requires Supabase configuration
                                 </p>
-                            </div>
-                        )}
+                            )}
+                        </form>
                     </CardContent>
                 </Card>
 
                 {/* Footer */}
                 <p className="text-center text-sm text-muted-foreground mt-6">
-                    Don't have an account?{' '}
-                    <Link to="/signup" className="text-primary hover:underline font-medium">
-                        Sign Up
+                    Already have an account?{' '}
+                    <Link to="/login" className="text-primary hover:underline font-medium">
+                        Sign In
                     </Link>
                 </p>
             </div>

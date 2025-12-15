@@ -7,6 +7,7 @@ import {
 } from '@tanstack/react-router'
 import { DashboardLayout } from '@/components/dashboard/DashboardLayout'
 import { LoginPage } from '@/pages/Login'
+import { SignupPage } from '@/pages/Signup'
 import { Dashboard } from '@/pages/Dashboard'
 import { ProjectsPage } from '@/pages/ProjectsPage'
 import { TasksPage } from '@/pages/TasksPage'
@@ -35,6 +36,13 @@ const welcomeRoute = createRoute({
     getParentRoute: () => rootRoute,
     path: '/welcome',
     component: WelcomePage,
+})
+
+// Signup page
+const signupRoute = createRoute({
+    getParentRoute: () => rootRoute,
+    path: '/signup',
+    component: SignupPage,
 })
 
 // Dashboard layout wrapper route - NO AUTH REQUIRED FOR NOW
@@ -139,6 +147,7 @@ const notFoundRoute = createRoute({
 const routeTree = rootRoute.addChildren([
     indexRoute,
     loginRoute,
+    signupRoute,
     welcomeRoute,
     dashboardLayoutRoute.addChildren([
         dashboardRoute,
