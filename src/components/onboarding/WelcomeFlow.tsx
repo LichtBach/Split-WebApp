@@ -37,7 +37,6 @@ interface FormData {
 
 const steps = [
     { id: 'name', title: "Let's get to know you", subtitle: "What's your name?", icon: User },
-    { id: 'email', title: "Stay connected", subtitle: "What's your email address?", icon: Mail },
     { id: 'phone', title: "Direct line", subtitle: "What's your phone number?", icon: Phone },
     { id: 'contact', title: "Your preference", subtitle: "How would you like us to reach you?", icon: MessageSquare },
     { id: 'serviceType', title: "Your solution", subtitle: "What service are you interested in?", icon: Zap },
@@ -52,11 +51,6 @@ const creativeMessages: Record<string, string[]> = {
         "Great to meet you! ✨",
         "What a wonderful name!",
         "Perfect, let's continue this journey together.",
-    ],
-    email: [
-        "Excellent! We'll keep your inbox interesting. 📬",
-        "Got it! Expect nothing but value.",
-        "Perfect, we promise no spam. 💯",
     ],
     phone: [
         "Direct line secured! 📞",
@@ -322,8 +316,6 @@ export function WelcomeFlow({ onComplete }: { onComplete: (data: FormData) => vo
         switch (currentStepData.id) {
             case 'name':
                 return formData.fullName.trim().length >= 2
-            case 'email':
-                return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)
             case 'phone':
                 return formData.phone.trim().length >= 6
             case 'contact':

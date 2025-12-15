@@ -41,7 +41,7 @@ export function SignupPage() {
         await signup(data.email, data.password, data.agencyName)
         const authState = useAuthStore.getState()
         if (authState.isAuthenticated) {
-            navigate({ to: '/dashboard' })
+            navigate({ to: '/welcome' })
         }
     }
 
@@ -221,7 +221,7 @@ export function SignupPage() {
                                 size="lg"
                                 className="w-full"
                                 isLoading={isLoading}
-                                disabled={!hasSupabaseCredentials}
+                                disabled={isLoading || !hasSupabaseCredentials}
                             >
                                 Create Account
                             </Button>
