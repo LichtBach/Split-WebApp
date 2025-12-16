@@ -64,7 +64,7 @@ export function SignupPage() {
                     <span className="text-2xl font-bold bg-gradient-to-r from-orange-500 to-orange-600 bg-clip-text text-transparent">Receptionist</span>
                 </div>
 
-                <Card className="border-0 shadow-xl glass">
+                <Card className="border shadow-xl">
                     <CardHeader className="text-center pb-4">
                         <CardTitle className="text-2xl">Create Account</CardTitle>
                         <CardDescription>

@@ -24,7 +24,7 @@ export const useUIStore = create<UIState>()(
         (set, get) => ({
             sidebarOpen: true,
             sidebarCollapsed: false,
-            theme: 'dark',
+            theme: 'light',
             toasts: [],
 
             toggleSidebar: () => set(state => ({ sidebarOpen: !state.sidebarOpen })),
@@ -84,7 +84,7 @@ if (typeof window !== 'undefined') {
                 document.documentElement.classList.add(state.theme)
             }
         } catch {
-            document.documentElement.classList.add('dark')
+            document.documentElement.classList.add('light')
         }
     }
 }
