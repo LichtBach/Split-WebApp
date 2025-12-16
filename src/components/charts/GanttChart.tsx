@@ -3,34 +3,34 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { cn } from '@/lib/utils'
 import { format, addDays, startOfWeek } from 'date-fns'
 
-// Category types and colors
+// Category types and colors - using cohesive blue/dark palette
 export type TaskCategory = 'foundation' | 'testing' | 'integration' | 'production' | 'critical'
 
 const categoryConfig: Record<TaskCategory, { label: string; color: string; gradient: string }> = {
     foundation: {
         label: 'Foundation',
-        color: '#7C3AED',
-        gradient: 'from-violet-500 to-purple-600',
+        color: '#1e40af',
+        gradient: 'from-blue-700 to-blue-800',
     },
     testing: {
         label: 'Testing & MVP',
-        color: '#EC4899',
-        gradient: 'from-pink-500 to-rose-500',
+        color: '#1e3a8a',
+        gradient: 'from-blue-800 to-blue-900',
     },
     integration: {
         label: 'Integration',
-        color: '#3B82F6',
-        gradient: 'from-blue-500 to-indigo-500',
+        color: '#3b82f6',
+        gradient: 'from-blue-500 to-blue-600',
     },
     production: {
         label: 'Production Launch',
-        color: '#10B981',
-        gradient: 'from-emerald-400 to-teal-500',
+        color: '#0f172a',
+        gradient: 'from-slate-800 to-slate-900',
     },
     critical: {
         label: 'Critical Dependency',
-        color: '#F59E0B',
-        gradient: 'from-amber-400 to-blue-500',
+        color: '#334155',
+        gradient: 'from-slate-600 to-slate-700',
     },
 }
 
@@ -131,7 +131,7 @@ export function GanttChart({
                     <table className="w-full border-collapse">
                         {/* Header */}
                         <thead>
-                            <tr className="bg-gradient-to-r from-violet-600 to-indigo-600 text-white">
+                            <tr className="bg-black text-white">
                                 <th className="text-left p-4 font-semibold min-w-[250px] border-r border-white/20">
                                     Task / Deliverable
                                 </th>
