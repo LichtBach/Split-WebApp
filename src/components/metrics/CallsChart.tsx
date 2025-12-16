@@ -44,18 +44,18 @@ export function CallsChart({
                             margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
                         >
                             <defs>
-                                {/* Simplified gradients without heavy filters */}
+                                {/* Simplified gradients with black/gray */}
                                 <linearGradient id="callsGlow" x1="0" y1="0" x2="0" y2="1">
-                                    <stop offset="0%" stopColor="#FF6B00" stopOpacity={0.3} />
-                                    <stop offset="100%" stopColor="#FF6B00" stopOpacity={0} />
+                                    <stop offset="0%" stopColor="#000000" stopOpacity={0.2} />
+                                    <stop offset="100%" stopColor="#000000" stopOpacity={0} />
                                 </linearGradient>
                                 <linearGradient id="qualifiedGlow" x1="0" y1="0" x2="0" y2="1">
-                                    <stop offset="0%" stopColor="#22c55e" stopOpacity={0.2} />
-                                    <stop offset="100%" stopColor="#22c55e" stopOpacity={0} />
+                                    <stop offset="0%" stopColor="#374151" stopOpacity={0.15} />
+                                    <stop offset="100%" stopColor="#374151" stopOpacity={0} />
                                 </linearGradient>
                                 <linearGradient id="conversionsGlow" x1="0" y1="0" x2="0" y2="1">
-                                    <stop offset="0%" stopColor="#a855f7" stopOpacity={0.2} />
-                                    <stop offset="100%" stopColor="#a855f7" stopOpacity={0} />
+                                    <stop offset="0%" stopColor="#6b7280" stopOpacity={0.1} />
+                                    <stop offset="100%" stopColor="#6b7280" stopOpacity={0} />
                                 </linearGradient>
                             </defs>
                             <CartesianGrid strokeDasharray="3 3" className="stroke-muted" opacity={0.3} />
@@ -75,7 +75,7 @@ export function CallsChart({
                                     backgroundColor: 'hsl(var(--card))',
                                     border: '1px solid hsl(var(--border))',
                                     borderRadius: '12px',
-                                    boxShadow: '0 4px 20px rgb(0 0 0 / 0.3)',
+                                    boxShadow: '0 4px 20px rgb(0 0 0 / 0.1)',
                                 }}
                                 labelStyle={{ color: 'hsl(var(--foreground))' }}
                             />
@@ -108,24 +108,24 @@ export function CallsChart({
                                 />
                             )}
 
-                            {/* Main lines - no heavy SVG filters */}
+                            {/* Main lines - black/gray monochrome */}
                             <Line
                                 type="monotone"
                                 dataKey="calls"
                                 name="Total Calls"
-                                stroke="#FF6B00"
+                                stroke="#000000"
                                 strokeWidth={2.5}
-                                dot={{ r: 4, fill: '#FF6B00' }}
-                                activeDot={{ r: 6, fill: '#FF6B00', stroke: '#fff', strokeWidth: 2 }}
+                                dot={{ r: 4, fill: '#000000' }}
+                                activeDot={{ r: 6, fill: '#000000', stroke: '#fff', strokeWidth: 2 }}
                             />
                             {showQualified && (
                                 <Line
                                     type="monotone"
                                     dataKey="qualified"
                                     name="Qualified Leads"
-                                    stroke="#22c55e"
+                                    stroke="#374151"
                                     strokeWidth={2}
-                                    dot={{ r: 3, fill: '#22c55e' }}
+                                    dot={{ r: 3, fill: '#374151' }}
                                     activeDot={{ r: 5, stroke: '#fff', strokeWidth: 2 }}
                                 />
                             )}
@@ -134,9 +134,9 @@ export function CallsChart({
                                     type="monotone"
                                     dataKey="conversions"
                                     name="Conversions"
-                                    stroke="#a855f7"
+                                    stroke="#9ca3af"
                                     strokeWidth={2}
-                                    dot={{ r: 3, fill: '#a855f7' }}
+                                    dot={{ r: 3, fill: '#9ca3af' }}
                                     activeDot={{ r: 5, stroke: '#fff', strokeWidth: 2 }}
                                 />
                             )}
