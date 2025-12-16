@@ -53,7 +53,7 @@ function NavIcon({ icon: Icon, isActive }: { icon: React.ElementType; isActive: 
                 "h-6 w-6 shrink-0 transition-colors duration-200",
                 isActive
                     ? "text-orange-500"
-                    : "text-gray-200 dark:text-black"
+                    : "text-gray-600 dark:text-gray-300"
             )}
         />
     )
@@ -69,12 +69,12 @@ export function Sidebar() {
             <div className="p-3 h-full">
                 <div
                     className={cn(
-                        "relative flex flex-col h-full rounded-2xl bg-gray-900 dark:bg-white backdrop-blur-lg shadow-2xl border border-gray-700/50 dark:border-gray-300/50 transition-all duration-300",
+                        "relative flex flex-col h-full rounded-2xl bg-white dark:bg-gray-900 shadow-xl border border-gray-200 dark:border-gray-700/50 transition-all duration-300",
                         sidebarCollapsed ? "w-[76px]" : "w-[260px]"
                     )}
                 >
                     {/* Logo */}
-                    <div className="flex h-16 items-center border-b border-gray-700/50 dark:border-gray-300/50 px-4">
+                    <div className="flex h-16 items-center border-b border-gray-200 dark:border-gray-700/50 px-4">
                         <Link to="/dashboard" className="flex items-center gap-3">
                             <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-orange-500 to-orange-600 shadow-lg shadow-orange-500/30">
                                 <span className="text-sm font-bold text-white">AI</span>
@@ -99,8 +99,8 @@ export function Sidebar() {
                                         className={cn(
                                             "flex items-center gap-3 rounded-xl px-2.5 py-2 text-sm font-medium transition-all duration-200",
                                             isActive
-                                                ? "bg-orange-500/15 text-orange-400 dark:text-orange-600"
-                                                : "text-gray-300 dark:text-gray-600 hover:bg-white/5 dark:hover:bg-gray-100 hover:text-white dark:hover:text-gray-900",
+                                                ? "bg-orange-500/15 text-orange-600"
+                                                : "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/5 hover:text-gray-900 dark:hover:text-white",
                                             sidebarCollapsed && "justify-center px-2"
                                         )}
                                     >
@@ -124,7 +124,7 @@ export function Sidebar() {
                             })}
                         </nav>
 
-                        <Separator className="my-4 bg-gray-700/50 dark:bg-gray-300/50" />
+                        <Separator className="my-4 bg-gray-200 dark:bg-gray-700/50" />
 
                         {/* Admin Section */}
                         {!sidebarCollapsed && (
@@ -144,8 +144,8 @@ export function Sidebar() {
                                         className={cn(
                                             "flex items-center gap-3 rounded-xl px-2.5 py-2 text-sm font-medium transition-all duration-200",
                                             isActive
-                                                ? "bg-orange-500/15 text-orange-400 dark:text-orange-600"
-                                                : "text-gray-300 dark:text-gray-600 hover:bg-white/5 dark:hover:bg-gray-100 hover:text-white dark:hover:text-gray-900",
+                                                ? "bg-orange-500/15 text-orange-600"
+                                                : "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/5 hover:text-gray-900 dark:hover:text-white",
                                             sidebarCollapsed && "justify-center px-2"
                                         )}
                                     >
@@ -181,8 +181,8 @@ export function Sidebar() {
                                         className={cn(
                                             "flex items-center gap-3 rounded-xl px-2.5 py-2 text-sm font-medium transition-all duration-200",
                                             isActive
-                                                ? "bg-orange-500/15 text-orange-400 dark:text-orange-600"
-                                                : "text-gray-300 dark:text-gray-600 hover:bg-white/5 dark:hover:bg-gray-100 hover:text-white dark:hover:text-gray-900",
+                                                ? "bg-orange-500/15 text-orange-600"
+                                                : "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/5 hover:text-gray-900 dark:hover:text-white",
                                             sidebarCollapsed && "justify-center px-2"
                                         )}
                                     >
@@ -214,7 +214,7 @@ export function Sidebar() {
                             size="sm"
                             onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
                             className={cn(
-                                "w-full justify-center text-gray-400 dark:text-gray-600 hover:bg-white/10 dark:hover:bg-gray-100 hover:text-white dark:hover:text-gray-900",
+                                "w-full justify-center text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-white/10 hover:text-gray-900 dark:hover:text-white",
                                 !sidebarCollapsed && "justify-start"
                             )}
                         >
