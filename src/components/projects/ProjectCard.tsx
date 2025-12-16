@@ -75,7 +75,7 @@ export function ProjectCard({ project }: ProjectCardProps) {
                         <Progress
                             value={budgetPercent}
                             className="h-2"
-                            indicatorClassName={budgetPercent > 80 ? 'bg-orange-500' : undefined}
+                            indicatorClassName={budgetPercent > 80 ? 'bg-blue-500' : undefined}
                         />
                     </div>
                 )}

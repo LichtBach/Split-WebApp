@@ -28,7 +28,7 @@ export function CostChart({ data, title = 'Daily Cost' }: CostChartProps) {
                 <div className="rounded-xl border border-white/10 bg-card p-3 shadow-lg">
                     <p className="font-medium">{label}</p>
                     <p className="text-sm text-muted-foreground">
-                        Cost: <span className="font-semibold text-orange-400">{formatCurrency(payload[0].value)}</span>
+                        Cost: <span className="font-semibold text-blue-400">{formatCurrency(payload[0].value)}</span>
                     </p>
                 </div>
             )

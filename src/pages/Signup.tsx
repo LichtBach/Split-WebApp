@@ -53,15 +53,15 @@ export function SignupPage() {
     return (
         <div className="min-h-screen flex items-center justify-center bg-background p-4">
             {/* Background Gradient */}
-            <div className="absolute inset-0 bg-gradient-to-br from-orange-500/10 via-transparent to-orange-600/10 pointer-events-none" />
+            <div className="absolute inset-0 bg-gradient-to-br from-blue-500/10 via-transparent to-blue-600/10 pointer-events-none" />
 
             <div className="w-full max-w-md relative animate-fade-in">
                 {/* Logo */}
                 <div className="flex items-center justify-center gap-3 mb-8">
-                    <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-orange-500 to-orange-600 shadow-lg shadow-orange-500/25">
+                    <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-blue-500 to-blue-600 shadow-lg shadow-blue-500/25">
                         <span className="text-lg font-bold text-white">AI</span>
                     </div>
-                    <span className="text-2xl font-bold bg-gradient-to-r from-orange-500 to-orange-600 bg-clip-text text-transparent">Receptionist</span>
+                    <span className="text-2xl font-bold bg-gradient-to-r from-blue-500 to-blue-600 bg-clip-text text-transparent">Receptionist</span>
                 </div>
 
                 <Card className="border shadow-xl">

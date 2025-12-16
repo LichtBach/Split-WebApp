@@ -83,7 +83,7 @@ export function Header({ title, subtitle }: HeaderProps) {
                         >
                             <Avatar className="h-9 w-9">
                                 <AvatarImage src={user?.avatar_url} alt={user?.agency_name} />
-                                <AvatarFallback className="bg-gradient-to-br from-orange-500 to-orange-600 text-white">
+                                <AvatarFallback className="bg-gradient-to-br from-blue-500 to-blue-600 text-white">
                                     {user?.agency_name ? getInitials(user.agency_name) : 'U'}
                                 </AvatarFallback>
                             </Avatar>

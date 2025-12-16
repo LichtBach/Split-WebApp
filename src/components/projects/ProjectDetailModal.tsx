@@ -208,7 +208,7 @@ export function ProjectDetailModal() {
                                                     <DollarSign className="h-4 w-4" />
                                                     <span>Spent</span>
                                                 </div>
-                                                <div className="text-sm font-medium text-orange-400">
+                                                <div className="text-sm font-medium text-blue-400">
                                                     {formatCurrency(selectedProject.spent)}
                                                 </div>
                                             </div>

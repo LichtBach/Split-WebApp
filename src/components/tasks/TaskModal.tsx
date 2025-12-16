@@ -35,7 +35,7 @@ const statusOptions: { value: TaskStatus; label: string; color: string }[] = [
 const priorityOptions: { value: TaskPriority; label: string; color: string }[] = [
     { value: 'low', label: 'Low', color: 'bg-gray-500' },
     { value: 'medium', label: 'Medium', color: 'bg-blue-500' },
-    { value: 'high', label: 'High', color: 'bg-orange-500' },
+    { value: 'high', label: 'High', color: 'bg-blue-500' },
     { value: 'urgent', label: 'Urgent', color: 'bg-red-500' },
 ]
 
@@ -383,7 +383,7 @@ export function TaskModal() {
                                                     checked={formData.client_visible}
                                                     onChange={(e) => setFormData({ ...formData, client_visible: e.target.checked })}
                                                     disabled={isViewMode}
-                                                    className="h-4 w-4 rounded border-gray-300 accent-orange-500"
+                                                    className="h-4 w-4 rounded border-gray-300 accent-blue-500"
                                                 />
                                                 <Label htmlFor="client_visible" className="text-sm font-normal">
                                                     Visible to client

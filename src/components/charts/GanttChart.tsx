@@ -30,7 +30,7 @@ const categoryConfig: Record<TaskCategory, { label: string; color: string; gradi
     critical: {
         label: 'Critical Dependency',
         color: '#F59E0B',
-        gradient: 'from-amber-400 to-orange-500',
+        gradient: 'from-amber-400 to-blue-500',
     },
 }
 

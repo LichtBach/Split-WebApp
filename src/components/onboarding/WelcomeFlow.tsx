@@ -473,7 +473,7 @@ export function WelcomeFlow({ onComplete }: { onComplete: (data: FormData) => vo
                             placeholder="Enter your full name"
                             value={formData.fullName}
                             onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
-                            className="h-16 md:h-18 text-xl md:text-2xl bg-white/5 border-white/20 text-white placeholder:text-white/40 transition-all rounded-2xl px-6 focus:border-orange-500/60 focus:ring-orange-500/30"
+                            className="h-16 md:h-18 text-xl md:text-2xl bg-white/5 border-white/20 text-white placeholder:text-white/40 transition-all rounded-2xl px-6 focus:border-blue-500/60 focus:ring-blue-500/30"
                         />
                     )}
 
@@ -484,7 +484,7 @@ export function WelcomeFlow({ onComplete }: { onComplete: (data: FormData) => vo
                             placeholder="you@example.com"
                             value={formData.email}
                             onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                            className="h-16 md:h-18 text-xl md:text-2xl bg-white/5 border-white/20 text-white placeholder:text-white/40 transition-all rounded-2xl px-6 focus:border-orange-500/60 focus:ring-orange-500/30"
+                            className="h-16 md:h-18 text-xl md:text-2xl bg-white/5 border-white/20 text-white placeholder:text-white/40 transition-all rounded-2xl px-6 focus:border-blue-500/60 focus:ring-blue-500/30"
                         />
                     )}
 
@@ -495,7 +495,7 @@ export function WelcomeFlow({ onComplete }: { onComplete: (data: FormData) => vo
                             placeholder="+1 (555) 000-0000"
                             value={formData.phone}
                             onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                            className="h-16 md:h-18 text-xl md:text-2xl bg-white/5 border-white/20 text-white placeholder:text-white/40 transition-all rounded-2xl px-6 focus:border-orange-500/60 focus:ring-orange-500/30"
+                            className="h-16 md:h-18 text-xl md:text-2xl bg-white/5 border-white/20 text-white placeholder:text-white/40 transition-all rounded-2xl px-6 focus:border-blue-500/60 focus:ring-blue-500/30"
                         />
                     )}
 
@@ -666,7 +666,7 @@ export function WelcomeFlow({ onComplete }: { onComplete: (data: FormData) => vo
                             value={formData.expectations}
                             onChange={(e) => setFormData({ ...formData, expectations: e.target.value })}
                             rows={6}
-                            className="text-xl bg-white/5 border-white/20 text-white placeholder:text-white/40 transition-all resize-none rounded-2xl p-5 focus:border-orange-500/60 focus:ring-orange-500/30 min-h-[200px]"
+                            className="text-xl bg-white/5 border-white/20 text-white placeholder:text-white/40 transition-all resize-none rounded-2xl p-5 focus:border-blue-500/60 focus:ring-blue-500/30 min-h-[200px]"
                         />
                     )}
 
@@ -677,7 +677,7 @@ export function WelcomeFlow({ onComplete }: { onComplete: (data: FormData) => vo
                             value={formData.comments}
                             onChange={(e) => setFormData({ ...formData, comments: e.target.value })}
                             rows={6}
-                            className="text-xl bg-white/5 border-white/20 text-white placeholder:text-white/40 transition-all resize-none rounded-2xl p-5 focus:border-orange-500/60 focus:ring-orange-500/30 min-h-[200px]"
+                            className="text-xl bg-white/5 border-white/20 text-white placeholder:text-white/40 transition-all resize-none rounded-2xl p-5 focus:border-blue-500/60 focus:ring-blue-500/30 min-h-[200px]"
                         />
                     )}
 

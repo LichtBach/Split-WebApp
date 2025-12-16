@@ -80,7 +80,7 @@ export function RoadmapCalendar({
     const getPriorityBorder = (task: Task) => {
         switch (task.priority) {
             case 'urgent': return 'border-red-500'
-            case 'high': return 'border-orange-500'
+            case 'high': return 'border-blue-500'
             case 'medium': return 'border-blue-500'
             default: return 'border-gray-400'
         }

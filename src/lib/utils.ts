@@ -124,7 +124,7 @@ export function getPriorityColor(priority: string): string {
     const colors: Record<string, string> = {
         low: 'bg-gray-500/10 text-gray-500',
         medium: 'bg-blue-500/10 text-blue-500',
-        high: 'bg-orange-500/10 text-orange-500',
+        high: 'bg-blue-500/10 text-blue-500',
         urgent: 'bg-red-500/10 text-red-500',
     }
     return colors[priority] || colors.medium

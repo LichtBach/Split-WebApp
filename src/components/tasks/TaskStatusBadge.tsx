@@ -53,7 +53,7 @@ const priorityConfig: Record<TaskPriority, { label: string; className: string }>
     },
     high: {
         label: 'High',
-        className: 'bg-orange-500/10 text-orange-500',
+        className: 'bg-blue-500/10 text-blue-500',
     },
     urgent: {
         label: 'Urgent',

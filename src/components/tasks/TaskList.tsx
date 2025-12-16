@@ -42,7 +42,7 @@ const statusOptions: { value: TaskStatus; label: string; icon: React.ReactNode }
 const priorityOptions: { value: TaskPriority; label: string; color: string }[] = [
     { value: 'low', label: 'Low', color: 'bg-gray-500' },
     { value: 'medium', label: 'Medium', color: 'bg-blue-500' },
-    { value: 'high', label: 'High', color: 'bg-orange-500' },
+    { value: 'high', label: 'High', color: 'bg-blue-500' },
     { value: 'urgent', label: 'Urgent', color: 'bg-red-500' },
 ]
 
@@ -66,7 +66,7 @@ function TaskItem({ task, expanded = false, onToggle }: TaskItemProps) {
             className={cn(
                 "transition-transform duration-200 hover:scale-[1.02] origin-left border-l-4 will-change-transform",
                 task.priority === 'urgent' && "border-l-red-500",
-                task.priority === 'high' && "border-l-orange-500",
+                task.priority === 'high' && "border-l-blue-500",
                 task.priority === 'medium' && "border-l-blue-500",
                 task.priority === 'low' && "border-l-gray-500",
             )}

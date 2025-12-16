@@ -22,7 +22,7 @@ const roleConfig: Record<TeamRole, { label: string; color: string }> = {
     project_manager: { label: 'Project Manager', color: 'bg-blue-500/10 text-blue-500 border-blue-500/20' },
     developer: { label: 'Developer', color: 'bg-green-500/10 text-green-500 border-green-500/20' },
     designer: { label: 'Designer', color: 'bg-pink-500/10 text-pink-500 border-pink-500/20' },
-    qa: { label: 'QA', color: 'bg-orange-500/10 text-orange-500 border-orange-500/20' },
+    qa: { label: 'QA', color: 'bg-blue-500/10 text-blue-500 border-blue-500/20' },
     support: { label: 'Support', color: 'bg-cyan-500/10 text-cyan-500 border-cyan-500/20' },
 }
 

@@ -80,7 +80,7 @@ function TaskRow({ task, client }: TaskRowProps) {
     const priorityColors: Record<string, string> = {
         low: 'border-l-gray-400',
         medium: 'border-l-blue-500',
-        high: 'border-l-orange-500',
+        high: 'border-l-blue-500',
         urgent: 'border-l-red-500',
     }
 
