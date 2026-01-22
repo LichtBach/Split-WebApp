@@ -3,24 +3,24 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { cn } from '@/lib/utils'
 import { format, addDays, startOfWeek } from 'date-fns'
 
-// Category types and colors - using cohesive blue/dark palette
+// Category types and colors - using DRA brand red/dark palette
 export type TaskCategory = 'foundation' | 'testing' | 'integration' | 'production' | 'critical'
 
 const categoryConfig: Record<TaskCategory, { label: string; color: string; gradient: string }> = {
     foundation: {
         label: 'Foundation',
-        color: '#1e40af',
-        gradient: 'from-blue-700 to-blue-800',
+        color: '#b52828',
+        gradient: 'from-[#dd3333] to-[#b52828]',
     },
     testing: {
         label: 'Testing & MVP',
-        color: '#1e3a8a',
-        gradient: 'from-blue-800 to-blue-900',
+        color: '#991f1f',
+        gradient: 'from-[#b52828] to-[#991f1f]',
     },
     integration: {
         label: 'Integration',
-        color: '#3b82f6',
-        gradient: 'from-blue-500 to-blue-600',
+        color: '#dd3333',
+        gradient: 'from-[#dd3333] to-[#c42d2d]',
     },
     production: {
         label: 'Production Launch',

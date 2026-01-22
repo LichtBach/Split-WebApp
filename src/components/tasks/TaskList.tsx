@@ -4,47 +4,15 @@ import {
     Clock,
     ChevronDown,
     ChevronRight,
-    MoreHorizontal,
-    Pencil,
-    Trash2,
-    Eye,
-    EyeOff,
     CheckCircle2,
     Circle as CircleIcon,
     AlertCircle,
     Pause
 } from 'lucide-react'
 import { Card, CardContent } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuSeparator,
-    DropdownMenuTrigger,
-    DropdownMenuSub,
-    DropdownMenuSubTrigger,
-    DropdownMenuSubContent,
-} from '@/components/ui/dropdown-menu'
 import { TaskStatusBadge, TaskPriorityBadge } from './TaskStatusBadge'
-import { useTaskStore } from '@/store/taskStore'
-import type { Task, TaskStatus, TaskPriority } from '@/types'
+import type { Task, TaskStatus } from '@/types'
 import { formatDate, formatRelativeTime, formatDuration, cn } from '@/lib/utils'
-
-const statusOptions: { value: TaskStatus; label: string; icon: React.ReactNode }[] = [
-    { value: 'todo', label: 'To Do', icon: <CircleIcon className="h-4 w-4 text-gray-500" /> },
-    { value: 'in_progress', label: 'In Progress', icon: <Clock className="h-4 w-4 text-blue-500" /> },
-    { value: 'in_review', label: 'In Review', icon: <AlertCircle className="h-4 w-4 text-purple-500" /> },
-    { value: 'done', label: 'Done', icon: <CheckCircle2 className="h-4 w-4 text-green-500" /> },
-    { value: 'on_hold', label: 'On Hold', icon: <Pause className="h-4 w-4 text-yellow-500" /> },
-]
-
-const priorityOptions: { value: TaskPriority; label: string; color: string }[] = [
-    { value: 'low', label: 'Low', color: 'bg-gray-500' },
-    { value: 'medium', label: 'Medium', color: 'bg-blue-500' },
-    { value: 'high', label: 'High', color: 'bg-blue-500' },
-    { value: 'urgent', label: 'Urgent', color: 'bg-red-500' },
-]
 
 interface TaskItemProps {
     task: Task
@@ -53,21 +21,13 @@ interface TaskItemProps {
 }
 
 function TaskItem({ task, expanded = false, onToggle }: TaskItemProps) {
-    const {
-        openEditModal,
-        deleteTask,
-        updateTaskStatus,
-        updateTaskPriority,
-        toggleClientVisibility
-    } = useTaskStore()
-
     return (
         <Card
             className={cn(
                 "transition-transform duration-200 hover:scale-[1.02] origin-left border-l-4 will-change-transform",
                 task.priority === 'urgent' && "border-l-red-500",
-                task.priority === 'high' && "border-l-blue-500",
-                task.priority === 'medium' && "border-l-blue-500",
+                task.priority === 'high' && "border-l-[#dd3333]",
+                task.priority === 'medium' && "border-l-yellow-500",
                 task.priority === 'low' && "border-l-gray-500",
             )}
         >
@@ -93,9 +53,6 @@ function TaskItem({ task, expanded = false, onToggle }: TaskItemProps) {
                     <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2">
                             <h4 className="font-medium truncate">{task.title}</h4>
-                            {task.client_visible === false && (
-                                <EyeOff className="h-3 w-3 text-muted-foreground" />
-                            )}
                         </div>
                     </div>
 
@@ -103,7 +60,7 @@ function TaskItem({ task, expanded = false, onToggle }: TaskItemProps) {
                     <div className="flex items-center gap-4 text-sm text-muted-foreground shrink-0">
                         {task.assigned_to && (
                             <div className="flex items-center gap-1.5">
-                                <div className="w-6 h-6 rounded-full bg-gradient-to-br from-[#667eea] to-[#764ba2] flex items-center justify-center text-white text-xs font-medium">
+                                <div className="w-6 h-6 rounded-full bg-gradient-to-br from-[#dd3333] to-[#b52828] flex items-center justify-center text-white text-xs font-medium">
                                     {task.assigned_to.charAt(0)}
                                 </div>
                                 <span className="hidden md:inline">{task.assigned_to}</span>
@@ -117,89 +74,6 @@ function TaskItem({ task, expanded = false, onToggle }: TaskItemProps) {
                         )}
                         <TaskPriorityBadge priority={task.priority} />
                     </div>
-
-                    {/* Actions */}
-                    <DropdownMenu>
-                        <DropdownMenuTrigger asChild onClick={(e) => e.stopPropagation()}>
-                            <Button variant="ghost" size="icon" className="h-8 w-8">
-                                <MoreHorizontal className="h-4 w-4" />
-                            </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end" onClick={(e) => e.stopPropagation()}>
-                            <DropdownMenuItem onClick={() => openEditModal(task)}>
-                                <Pencil className="h-4 w-4 mr-2" />
-                                Edit Task
-                            </DropdownMenuItem>
-
-                            <DropdownMenuSub>
-                                <DropdownMenuSubTrigger>
-                                    <CircleIcon className="h-4 w-4 mr-2" />
-                                    Change Status
-                                </DropdownMenuSubTrigger>
-                                <DropdownMenuSubContent>
-                                    {statusOptions.map((option) => (
-                                        <DropdownMenuItem
-                                            key={option.value}
-                                            onClick={() => updateTaskStatus(task.id, option.value)}
-                                        >
-                                            {option.icon}
-                                            <span className="ml-2">{option.label}</span>
-                                            {task.status === option.value && (
-                                                <CheckCircle2 className="h-4 w-4 ml-auto text-primary" />
-                                            )}
-                                        </DropdownMenuItem>
-                                    ))}
-                                </DropdownMenuSubContent>
-                            </DropdownMenuSub>
-
-                            <DropdownMenuSub>
-                                <DropdownMenuSubTrigger>
-                                    <AlertCircle className="h-4 w-4 mr-2" />
-                                    Change Priority
-                                </DropdownMenuSubTrigger>
-                                <DropdownMenuSubContent>
-                                    {priorityOptions.map((option) => (
-                                        <DropdownMenuItem
-                                            key={option.value}
-                                            onClick={() => updateTaskPriority(task.id, option.value)}
-                                        >
-                                            <div className={cn("w-2 h-2 rounded-full mr-2", option.color)} />
-                                            {option.label}
-                                            {task.priority === option.value && (
-                                                <CheckCircle2 className="h-4 w-4 ml-auto text-primary" />
-                                            )}
-                                        </DropdownMenuItem>
-                                    ))}
-                                </DropdownMenuSubContent>
-                            </DropdownMenuSub>
-
-                            <DropdownMenuSeparator />
-
-                            <DropdownMenuItem onClick={() => toggleClientVisibility(task.id)}>
-                                {task.client_visible !== false ? (
-                                    <>
-                                        <EyeOff className="h-4 w-4 mr-2" />
-                                        Hide from Client
-                                    </>
-                                ) : (
-                                    <>
-                                        <Eye className="h-4 w-4 mr-2" />
-                                        Show to Client
-                                    </>
-                                )}
-                            </DropdownMenuItem>
-
-                            <DropdownMenuSeparator />
-
-                            <DropdownMenuItem
-                                className="text-destructive"
-                                onClick={() => deleteTask(task.id)}
-                            >
-                                <Trash2 className="h-4 w-4 mr-2" />
-                                Delete Task
-                            </DropdownMenuItem>
-                        </DropdownMenuContent>
-                    </DropdownMenu>
                 </div>
 
                 {/* Expanded Content */}
@@ -223,7 +97,7 @@ function TaskItem({ task, expanded = false, onToggle }: TaskItemProps) {
                                 <div className="flex items-center gap-2">
                                     {task.assigned_to ? (
                                         <>
-                                            <div className="w-7 h-7 rounded-full bg-gradient-to-br from-[#667eea] to-[#764ba2] flex items-center justify-center text-white text-xs font-medium">
+                                            <div className="w-7 h-7 rounded-full bg-gradient-to-br from-[#dd3333] to-[#b52828] flex items-center justify-center text-white text-xs font-medium">
                                                 {task.assigned_to.charAt(0)}
                                             </div>
                                             <span className="text-sm font-medium">{task.assigned_to}</span>
@@ -271,17 +145,6 @@ function TaskItem({ task, expanded = false, onToggle }: TaskItemProps) {
                                 <span>Created {formatRelativeTime(task.created_at)}</span>
                                 <span>•</span>
                                 <span>Updated {formatRelativeTime(task.updated_at)}</span>
-                            </div>
-                            <div className="flex items-center gap-2">
-                                <Button
-                                    variant="outline"
-                                    size="sm"
-                                    className="h-7 text-xs"
-                                    onClick={() => openEditModal(task)}
-                                >
-                                    <Pencil className="h-3.5 w-3.5 mr-1" />
-                                    Edit
-                                </Button>
                             </div>
                         </div>
                     </div>

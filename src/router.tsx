@@ -9,15 +9,13 @@ import { DashboardLayout } from '@/components/dashboard/DashboardLayout'
 import { LoginPage } from '@/pages/Login'
 import { SignupPage } from '@/pages/Signup'
 import { Dashboard } from '@/pages/Dashboard'
-import { ProjectsPage } from '@/pages/ProjectsPage'
+import { DeliverablesPage } from '@/pages/DeliverablesPage'
 import { TasksPage } from '@/pages/TasksPage'
-import { MetricsPage } from '@/pages/MetricsPage'
 import { BillingPage } from '@/pages/BillingPage'
 import { TeamPage } from '@/pages/TeamPage'
 import { CalendarPage } from '@/pages/CalendarPage'
 import { WelcomePage } from '@/pages/WelcomePage'
-import { AdminTaskManagement } from '@/pages/admin/AdminTaskManagement'
-import { ClientTimeline } from '@/pages/admin/ClientTimeline'
+import { ProfilePage } from '@/pages/ProfilePage'
 
 // Root route
 const rootRoute = createRootRoute({
@@ -59,28 +57,16 @@ const dashboardRoute = createRoute({
     component: Dashboard,
 })
 
-const projectsRoute = createRoute({
+const deliverablesRoute = createRoute({
     getParentRoute: () => dashboardLayoutRoute,
-    path: '/projects',
-    component: ProjectsPage,
-})
-
-const projectDetailRoute = createRoute({
-    getParentRoute: () => dashboardLayoutRoute,
-    path: '/projects/$projectId',
-    component: () => <div>Project Detail (Coming Soon)</div>,
+    path: '/deliverables',
+    component: DeliverablesPage,
 })
 
 const tasksRoute = createRoute({
     getParentRoute: () => dashboardLayoutRoute,
     path: '/tasks',
     component: TasksPage,
-})
-
-const metricsRoute = createRoute({
-    getParentRoute: () => dashboardLayoutRoute,
-    path: '/metrics',
-    component: MetricsPage,
 })
 
 const billingRoute = createRoute({
@@ -101,23 +87,10 @@ const calendarRoute = createRoute({
     component: CalendarPage,
 })
 
-const settingsRoute = createRoute({
+const profileRoute = createRoute({
     getParentRoute: () => dashboardLayoutRoute,
-    path: '/settings',
-    component: () => <div>Settings (Coming Soon)</div>,
-})
-
-// Admin routes
-const adminTasksRoute = createRoute({
-    getParentRoute: () => dashboardLayoutRoute,
-    path: '/admin/tasks',
-    component: AdminTaskManagement,
-})
-
-const adminTimelineRoute = createRoute({
-    getParentRoute: () => dashboardLayoutRoute,
-    path: '/admin/timeline',
-    component: ClientTimeline,
+    path: '/profile',
+    component: ProfilePage,
 })
 
 // Index redirect - go directly to dashboard
@@ -151,16 +124,12 @@ const routeTree = rootRoute.addChildren([
     welcomeRoute,
     dashboardLayoutRoute.addChildren([
         dashboardRoute,
-        projectsRoute,
-        projectDetailRoute,
+        deliverablesRoute,
         tasksRoute,
         calendarRoute,
-        metricsRoute,
         billingRoute,
         teamRoute,
-        settingsRoute,
-        adminTasksRoute,
-        adminTimelineRoute,
+        profileRoute,
     ]),
     notFoundRoute,
 ])

@@ -1,11 +1,13 @@
 import { useState } from 'react'
-import { Search, Plus, Filter } from 'lucide-react'
+import { Search, Filter, ChevronDown, ChevronRight } from 'lucide-react'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { TaskList } from '@/components/tasks/TaskList'
-import { TaskModal } from '@/components/tasks/TaskModal'
 import { useTaskStore } from '@/store/taskStore'
+import { departmentConfig, type Department } from '@/services/mockData'
 import type { TaskStatus } from '@/types'
+import { cn } from '@/lib/utils'
 
 const statusFilters: { value: TaskStatus | 'all'; label: string }[] = [
     { value: 'all', label: 'All Tasks' },
@@ -13,27 +15,92 @@ const statusFilters: { value: TaskStatus | 'all'; label: string }[] = [
     { value: 'in_progress', label: 'In Progress' },
     { value: 'in_review', label: 'In Review' },
     { value: 'done', label: 'Done' },
-    { value: 'on_hold', label: 'On Hold' },
 ]
 
-export function TasksPage() {
-    const { tasks, openCreateModal } = useTaskStore()
-    const [searchQuery, setSearchQuery] = useState('')
-    const [statusFilter, setStatusFilter] = useState<TaskStatus | 'all'>('all')
+const departments: Department[] = ['DATA', 'PMK', 'SEO', 'SM', 'CONTENT']
 
-    const filteredTasks = tasks.filter((task) => {
+interface DepartmentSectionProps {
+    department: Department
+    tasks: any[]
+    searchQuery: string
+    statusFilter: TaskStatus | 'all'
+}
+
+function DepartmentSection({ department, tasks, searchQuery, statusFilter }: DepartmentSectionProps) {
+    const [isExpanded, setIsExpanded] = useState(true)
+    const config = departmentConfig[department]
+
+    // Filter tasks for this department
+    const departmentTasks = tasks.filter((task: any) => task.department === department)
+
+    // Apply search and status filters
+    const filteredTasks = departmentTasks.filter((task: any) => {
         const matchesSearch = task.title.toLowerCase().includes(searchQuery.toLowerCase())
         const matchesStatus = statusFilter === 'all' || task.status === statusFilter
         return matchesSearch && matchesStatus
     })
 
-    // Group by status for overview
+    if (filteredTasks.length === 0) return null
+
+    const completedCount = filteredTasks.filter((t: any) => t.status === 'done').length
+    const inProgressCount = filteredTasks.filter((t: any) => t.status === 'in_progress').length
+
+    return (
+        <Card className="overflow-hidden">
+            <CardHeader
+                className="cursor-pointer hover:bg-muted/50 transition-colors py-4"
+                onClick={() => setIsExpanded(!isExpanded)}
+            >
+                <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                        <div
+                            className="w-10 h-10 rounded-lg flex items-center justify-center text-xl"
+                            style={{ backgroundColor: `${config.color}15` }}
+                        >
+                            {config.icon}
+                        </div>
+                        <div>
+                            <CardTitle className="text-lg flex items-center gap-2">
+                                {config.name}
+                                <span className="text-sm font-normal text-muted-foreground">
+                                    ({filteredTasks.length} {filteredTasks.length === 1 ? 'task' : 'tasks'})
+                                </span>
+                            </CardTitle>
+                            <div className="flex items-center gap-3 text-xs text-muted-foreground mt-0.5">
+                                <span className="text-emerald-500">{completedCount} completed</span>
+                                <span className="text-blue-500">{inProgressCount} in progress</span>
+                            </div>
+                        </div>
+                    </div>
+                    <Button variant="ghost" size="icon" className="h-8 w-8">
+                        {isExpanded ? (
+                            <ChevronDown className="h-4 w-4" />
+                        ) : (
+                            <ChevronRight className="h-4 w-4" />
+                        )}
+                    </Button>
+                </div>
+            </CardHeader>
+            {isExpanded && (
+                <CardContent className="pt-0 pb-4">
+                    <TaskList tasks={filteredTasks} />
+                </CardContent>
+            )}
+        </Card>
+    )
+}
+
+export function TasksPage() {
+    const { tasks } = useTaskStore()
+    const [searchQuery, setSearchQuery] = useState('')
+    const [statusFilter, setStatusFilter] = useState<TaskStatus | 'all'>('all')
+
+    // Overall stats
     const taskCounts = {
         todo: tasks.filter(t => t.status === 'todo').length,
         in_progress: tasks.filter(t => t.status === 'in_progress').length,
         in_review: tasks.filter(t => t.status === 'in_review').length,
         done: tasks.filter(t => t.status === 'done').length,
-        on_hold: tasks.filter(t => t.status === 'on_hold').length,
     }
 
     return (
@@ -43,25 +110,23 @@ export function TasksPage() {
                 <div>
                     <h1 className="text-2xl font-bold tracking-tight">Tasks</h1>
                     <p className="text-muted-foreground">
-                        Manage and track all your tasks across projects
+                        View all project tasks organized by team
                     </p>
                 </div>
-                <Button variant="gradient" onClick={() => openCreateModal()}>
-                    <Plus className="h-4 w-4 mr-2" />
-                    Create Task
-                </Button>
             </div>
 
             {/* Quick Stats */}
-            <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
                 {Object.entries(taskCounts).map(([status, count]) => (
                     <button
                         key={status}
                         onClick={() => setStatusFilter(status as TaskStatus)}
-                        className={`p-3 rounded-lg border transition-all text-left ${statusFilter === status
+                        className={cn(
+                            "p-3 rounded-lg border transition-all text-left",
+                            statusFilter === status
                                 ? 'border-primary bg-primary/5'
                                 : 'hover:border-primary/50 hover:bg-accent/50'
-                            }`}
+                        )}
                     >
                         <p className="text-2xl font-bold">{count}</p>
                         <p className="text-xs text-muted-foreground capitalize">
@@ -96,27 +161,29 @@ export function TasksPage() {
                 </div>
             </div>
 
-            {/* Task List */}
-            {filteredTasks.length > 0 ? (
-                <TaskList tasks={filteredTasks} />
-            ) : (
+            {/* Tasks by Department */}
+            <div className="space-y-4">
+                {departments.map((department) => (
+                    <DepartmentSection
+                        key={department}
+                        department={department}
+                        tasks={tasks}
+                        searchQuery={searchQuery}
+                        statusFilter={statusFilter}
+                    />
+                ))}
+            </div>
+
+            {/* Empty state */}
+            {tasks.length === 0 && (
                 <div className="text-center py-12 border rounded-lg">
                     <Filter className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
                     <h3 className="text-lg font-semibold mb-2">No tasks found</h3>
-                    <p className="text-muted-foreground mb-4">
-                        {searchQuery
-                            ? 'Try adjusting your search query'
-                            : 'Create a new task to get started'}
+                    <p className="text-muted-foreground">
+                        Tasks will appear here as they are assigned
                     </p>
-                    <Button variant="gradient" onClick={() => openCreateModal()}>
-                        <Plus className="h-4 w-4 mr-2" />
-                        Create Task
-                    </Button>
                 </div>
             )}
-
-            {/* Task Modal */}
-            <TaskModal />
         </div>
     )
 }

@@ -1,160 +1,111 @@
-import { Download, FileText, CreditCard, DollarSign, PhoneCall, Users } from 'lucide-react'
+import { CreditCard, DollarSign, Package, Check } from 'lucide-react'
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { Badge } from '@/components/ui/badge'
 import { MetricCard } from '@/components/metrics/MetricCard'
-import { Separator } from '@/components/ui/separator'
-import { mockBilling } from '@/services/mockData'
-import { formatCurrency, formatDate, cn, getStatusColor } from '@/lib/utils'
+import { InvoicesList, type Invoice } from '@/components/billing/InvoicesList'
+import { formatCurrency } from '@/lib/utils'
+
+// Mock Data
+const mockInvoices: Invoice[] = [
+    {
+        id: '1',
+        invoiceNumber: 'INV-2026-001',
+        description: 'Project Kickoff - 30% Deposit',
+        amount: 3600,
+        currency: 'USD',
+        status: 'paid',
+        issueDate: 'Jan 5, 2026',
+        dueDate: 'Jan 12, 2026',
+        paidDate: 'Jan 8, 2026',
+        downloadUrl: '#',
+    },
+    {
+        id: '2',
+        invoiceNumber: 'INV-2026-002',
+        description: 'GTM Implementation Milestone',
+        amount: 2400,
+        currency: 'USD',
+        status: 'sent',
+        issueDate: 'Jan 18, 2026',
+        dueDate: 'Jan 25, 2026',
+        downloadUrl: '#',
+    }
+]
+
+const services = [
+    { name: 'Comprehensive GTM & GA4 Setup', fee: 8500, type: 'one-time' },
+    { name: 'Analytics Maintenance & Reporting', fee: 1500, type: 'monthly' },
+]
 
 export function BillingPage() {
-    const currentMonthBilling = mockBilling.filter(b => b.status === 'pending')
-    const paidBilling = mockBilling.filter(b => b.status === 'paid')
+    // Calculate totals
+    const pendingAmount = mockInvoices
+        .filter(i => i.status === 'sent' || i.status === 'overdue')
+        .reduce((sum, i) => sum + i.amount, 0)
 
-    const totalPending = currentMonthBilling.reduce((sum, b) => sum + b.total_cost, 0)
-    const totalPaid = paidBilling.reduce((sum, b) => sum + b.total_cost, 0)
+    const totalPaid = mockInvoices
+        .filter(i => i.status === 'paid')
+        .reduce((sum, i) => sum + i.amount, 0)
 
     return (
         <div className="space-y-6 animate-fade-in">
             {/* Header */}
-            <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-                <div>
-                    <h1 className="text-2xl font-bold tracking-tight">Billing</h1>
-                    <p className="text-muted-foreground">
-                        Track your costs and manage invoices.
-                    </p>
-                </div>
-                <Button variant="outline">
-                    <Download className="h-4 w-4 mr-2" />
-                    Export All
-                </Button>
+            <div>
+                <h1 className="text-2xl font-bold tracking-tight">Billing</h1>
+                <p className="text-muted-foreground">
+                    Manage your invoices and view service details.
+                </p>
             </div>
 
-            {/* Summary Cards */}
-            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+            {/* Scorecards */}
+            <div className="grid gap-4 md:grid-cols-2">
                 <MetricCard
                     title="Pending Amount"
-                    value={formatCurrency(totalPending)}
+                    value={formatCurrency(pendingAmount)}
                     icon={CreditCard}
+                    description="Total amount due"
                 />
                 <MetricCard
                     title="Total Paid (All Time)"
                     value={formatCurrency(totalPaid)}
                     icon={DollarSign}
-                />
-                <MetricCard
-                    title="This Month Calls"
-                    value={currentMonthBilling.reduce((sum, b) => sum + b.calls_made, 0)}
-                    icon={PhoneCall}
-                />
-                <MetricCard
-                    title="This Month Leads"
-                    value={currentMonthBilling.reduce((sum, b) => sum + b.qualified_leads, 0)}
-                    icon={Users}
+                    description="Lifetime payments"
                 />
             </div>
 
-            {/* Current Period */}
+            {/* Active Services */}
             <Card>
                 <CardHeader>
-                    <CardTitle>Current Billing Period</CardTitle>
-                    <CardDescription>December 2024</CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-6">
-                    {currentMonthBilling.map((bill) => (
-                        <div key={bill.id} className="space-y-4">
-                            <div className="flex items-center justify-between">
-                                <div>
-                                    <h4 className="font-medium">Project Invoice</h4>
-                                    <p className="text-sm text-muted-foreground">
-                                        Billing period: {formatDate(bill.billing_month, 'MMMM yyyy')}
-                                    </p>
-                                </div>
-                                <Badge variant="outline" className={getStatusColor(bill.status)}>
-                                    {bill.status}
-                                </Badge>
-                            </div>
-
-                            <div className="grid gap-4 sm:grid-cols-4">
-                                <div className="bg-muted/50 rounded-lg p-4">
-                                    <p className="text-sm text-muted-foreground">Calls Made</p>
-                                    <p className="text-2xl font-bold">{bill.calls_made.toLocaleString()}</p>
-                                    <p className="text-xs text-muted-foreground mt-1">
-                                        @ {formatCurrency(bill.cost_per_call || 0)}/call
-                                    </p>
-                                </div>
-                                <div className="bg-muted/50 rounded-lg p-4">
-                                    <p className="text-sm text-muted-foreground">Qualified Leads</p>
-                                    <p className="text-2xl font-bold">{bill.qualified_leads.toLocaleString()}</p>
-                                    <p className="text-xs text-muted-foreground mt-1">
-                                        @ {formatCurrency(bill.cost_per_lead || 0)}/lead
-                                    </p>
-                                </div>
-                                <div className="bg-muted/50 rounded-lg p-4">
-                                    <p className="text-sm text-muted-foreground">Conversions</p>
-                                    <p className="text-2xl font-bold">{bill.conversions.toLocaleString()}</p>
-                                </div>
-                                <div className="bg-primary/10 rounded-lg p-4 border border-primary/20">
-                                    <p className="text-sm text-muted-foreground">Total Cost</p>
-                                    <p className="text-2xl font-bold gradient-text">{formatCurrency(bill.total_cost)}</p>
-                                </div>
-                            </div>
-                        </div>
-                    ))}
-                </CardContent>
-            </Card>
-
-            {/* Invoice History */}
-            <Card>
-                <CardHeader>
-                    <CardTitle>Invoice History</CardTitle>
-                    <CardDescription>Past billing periods and invoices</CardDescription>
+                    <div className="flex items-center gap-2">
+                        <Package className="h-5 w-5 text-[#dd3333]" />
+                        <CardTitle>Active Services</CardTitle>
+                    </div>
+                    <CardDescription>Breakdown of your current engagement services</CardDescription>
                 </CardHeader>
                 <CardContent>
                     <div className="space-y-4">
-                        {paidBilling.map((bill, index) => (
-                            <div key={bill.id}>
-                                {index > 0 && <Separator className="my-4" />}
-                                <div className="flex items-center justify-between">
-                                    <div className="flex items-center gap-4">
-                                        <div className="rounded-lg bg-muted p-3">
-                                            <FileText className="h-5 w-5 text-muted-foreground" />
-                                        </div>
-                                        <div>
-                                            <h4 className="font-medium">
-                                                {formatDate(bill.billing_month, 'MMMM yyyy')} Invoice
-                                            </h4>
-                                            <p className="text-sm text-muted-foreground">
-                                                {bill.calls_made.toLocaleString()} calls • {bill.qualified_leads.toLocaleString()} leads
-                                            </p>
-                                        </div>
+                        {services.map((service, index) => (
+                            <div key={index} className="flex items-center justify-between p-4 rounded-lg bg-muted/50 border">
+                                <div className="flex items-center gap-3">
+                                    <div className="h-8 w-8 rounded-full bg-emerald-500/10 flex items-center justify-center">
+                                        <Check className="h-4 w-4 text-emerald-500" />
                                     </div>
-                                    <div className="flex items-center gap-4">
-                                        <div className="text-right">
-                                            <p className="font-semibold">{formatCurrency(bill.total_cost)}</p>
-                                            <Badge variant="outline" className={cn('mt-1', getStatusColor(bill.status))}>
-                                                {bill.status}
-                                            </Badge>
-                                        </div>
-                                        {bill.invoice_url && (
-                                            <Button variant="ghost" size="icon">
-                                                <Download className="h-4 w-4" />
-                                            </Button>
-                                        )}
+                                    <div>
+                                        <h4 className="font-medium">{service.name}</h4>
+                                        <p className="text-xs text-muted-foreground capitalize">{service.type} fee</p>
                                     </div>
+                                </div>
+                                <div className="text-right">
+                                    <p className="font-bold text-lg">{formatCurrency(service.fee)}</p>
+                                    <span className="text-xs text-muted-foreground">({service.type})</span>
                                 </div>
                             </div>
                         ))}
                     </div>
-
-                    {paidBilling.length === 0 && (
-                        <div className="text-center py-8">
-                            <FileText className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
-                            <p className="text-muted-foreground">No previous invoices</p>
-                        </div>
-                    )}
                 </CardContent>
             </Card>
+
+            {/* Invoice History */}
+            <InvoicesList invoices={mockInvoices} title="Invoice History" />
         </div>
     )
 }

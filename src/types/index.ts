@@ -114,7 +114,7 @@ export interface TeamMember {
     phone?: string;
     skills: string[];
     projects: string[]; // project IDs
-    status: 'active' | 'away' | 'offline';
+    status: 'active' | 'away' | 'offline' | 'busy';
     joined_at: string;
 }
 

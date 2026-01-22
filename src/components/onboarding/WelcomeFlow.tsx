@@ -1,48 +1,134 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
     User,
     Mail,
     Phone,
-    MessageSquare,
-    Sparkles,
+    Building2,
+    Users,
+    Layers,
+    Target,
     ChevronRight,
     ChevronLeft,
     Check,
-    Star,
-    Bot,
-    Zap,
-    Layers
+    Globe,
+    Smartphone,
+    Database,
+    Cookie,
+    Plus,
+    X
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { cn } from '@/lib/utils'
 
-// Orange accent color: #FF6B00
-const ACCENT_COLOR = '#FF6B00'
-const ACCENT_COLOR_RGB = '255, 107, 0'
+// DRA Brand Colors
+const ACCENT_COLOR = '#dd3333'
+const ACCENT_COLOR_RGB = '221, 51, 51'
+const ACCENT_DARK = '#b52828'
 
-export type ServiceType = 'voice_agent' | 'automation' | 'both' | null
+// Technology stack options by category
+const techStackOptions = {
+    website: {
+        label: 'Website Platform',
+        icon: Globe,
+        options: [
+            'WordPress',
+            'Shopify',
+            'WooCommerce',
+            'Magento',
+            'PrestaShop',
+            'Wix',
+            'Squarespace',
+            'Webflow',
+            'Custom HTML/CSS',
+            'Next.js',
+            'React',
+            'Vue.js',
+            'Angular',
+            'Nothing',
+            'Custom'
+        ]
+    },
+    mobileApp: {
+        label: 'Mobile App',
+        icon: Smartphone,
+        options: [
+            'iOS Native',
+            'Android Native',
+            'React Native',
+            'Flutter',
+            'Ionic',
+            'PWA',
+            'Nothing',
+            'Custom'
+        ]
+    },
+    crm: {
+        label: 'CRM System',
+        icon: Database,
+        options: [
+            'Salesforce',
+            'HubSpot',
+            'Zoho CRM',
+            'Pipedrive',
+            'Monday.com',
+            'Freshsales',
+            'Microsoft Dynamics',
+            'SAP CRM',
+            'Nothing',
+            'Custom'
+        ]
+    },
+    cookieManagement: {
+        label: 'Cookie Management',
+        icon: Cookie,
+        options: [
+            'Cookiebot',
+            'OneTrust',
+            'CookieYes',
+            'Termly',
+            'Complianz',
+            'Cookie Script',
+            'Osano',
+            'Nothing',
+            'Custom'
+        ]
+    }
+}
+
+interface ContactPerson {
+    name: string
+    email: string
+}
+
+interface TechStack {
+    website: string[]
+    mobileApp: string[]
+    crm: string[]
+    cookieManagement: string[]
+}
 
 interface FormData {
-    fullName: string
+    name: string
     email: string
     phone: string
-    preferredContact: 'email' | 'phone' | null
-    serviceType: ServiceType
-    expectations: string
-    comments: string
+    companyName: string
+    otherContacts: ContactPerson[]
+    techStack: TechStack
+    objective: string
 }
 
 const steps = [
-    { id: 'name', title: "Let's get to know you", subtitle: "What's your name?", icon: User },
+    { id: 'name', title: "Let's get started", subtitle: "What's your name?", icon: User },
+    { id: 'email', title: "Stay connected", subtitle: "What's your email address?", icon: Mail },
     { id: 'phone', title: "Direct line", subtitle: "What's your phone number?", icon: Phone },
-    { id: 'contact', title: "Your preference", subtitle: "How would you like us to reach you?", icon: MessageSquare },
-    { id: 'serviceType', title: "Your solution", subtitle: "What service are you interested in?", icon: Zap },
-    { id: 'expectations', title: "Your vision", subtitle: "What are your expectations from us?", icon: Sparkles },
-    { id: 'comments', title: "Anything else?", subtitle: "Important mentions or comments", icon: Star },
-    { id: 'complete', title: "Welcome aboard", subtitle: "You're all set!", icon: Check },
+    { id: 'company', title: "Your company", subtitle: "What's your company name?", icon: Building2 },
+    { id: 'contacts', title: "Team contacts", subtitle: "Add other contact persons (optional)", icon: Users },
+    { id: 'techStack', title: "Your tech stack", subtitle: "What technologies do you use?", icon: Layers },
+    { id: 'objective', title: "Your goals", subtitle: "What do you want to achieve?", icon: Target },
+    { id: 'complete', title: "Welcome aboard!", subtitle: "You're all set!", icon: Check },
 ]
 
 // Creative messages shown after each step completion
@@ -52,85 +138,36 @@ const creativeMessages: Record<string, string[]> = {
         "What a wonderful name!",
         "Perfect, let's continue this journey together.",
     ],
+    email: [
+        "Perfect! We'll keep you updated. 📧",
+        "Great, now we can stay in touch!",
+        "Your inbox is about to get more interesting!",
+    ],
     phone: [
         "Direct line secured! 📞",
         "We'll only call when it matters.",
         "Great, now we can connect instantly!",
     ],
-    contact: [
-        "Smart choice! We'll respect your preference. 💬",
-        "Noted! Communication your way.",
-        "Perfect, we're aligned!",
+    company: [
+        "Exciting! We love working with great companies. 🏢",
+        "Noted! Let's make your company shine.",
+        "Perfect, we can't wait to help you grow!",
     ],
-    serviceType: [
-        "Excellent choice! This will transform your business. 🚀",
-        "Amazing! You're going to love what we build together.",
-        "Perfect fit! Let's make magic happen. ✨",
+    contacts: [
+        "Team coordination is key! 👥",
+        "Great, everyone will be in the loop.",
+        "Perfect team setup!",
     ],
-    expectations: [
+    techStack: [
+        "Excellent tech choices! 🛠️",
+        "We know these tools well!",
+        "Perfect, we'll integrate seamlessly!",
+    ],
+    objective: [
         "We love your vision! Consider it done. 🎯",
         "This is exactly what we excel at!",
         "Challenge accepted! We're on it. 💪",
     ],
-    comments: [
-        "Thanks for sharing! This helps us serve you better. 🙏",
-        "Noted! Every detail matters to us.",
-        "Perfect, we've captured everything!",
-    ],
-}
-
-// Typewriter Text Component
-function TypewriterText({
-    text,
-    speed = 40,
-    delay = 0,
-    onComplete
-}: {
-    text: string
-    speed?: number
-    delay?: number
-    onComplete?: () => void
-}) {
-    const [displayedText, setDisplayedText] = useState('')
-    const [isTyping, setIsTyping] = useState(false)
-
-    useEffect(() => {
-        setDisplayedText('')
-        setIsTyping(false)
-
-        const startDelay = setTimeout(() => {
-            setIsTyping(true)
-            let index = 0
-
-            const typeInterval = setInterval(() => {
-                if (index < text.length) {
-                    setDisplayedText(text.slice(0, index + 1))
-                    index++
-                } else {
-                    clearInterval(typeInterval)
-                    setIsTyping(false)
-                    onComplete?.()
-                }
-            }, speed)
-
-            return () => clearInterval(typeInterval)
-        }, delay)
-
-        return () => clearTimeout(startDelay)
-    }, [text, speed, delay, onComplete])
-
-    return (
-        <span className="inline">
-            {displayedText}
-            {isTyping && (
-                <motion.span
-                    animate={{ opacity: [1, 0] }}
-                    transition={{ duration: 0.5, repeat: Infinity }}
-                    className="inline-block w-0.5 h-5 bg-current ml-0.5 align-middle"
-                />
-            )}
-        </span>
-    )
 }
 
 // Floating orb component for background glow
@@ -168,7 +205,7 @@ function ProgressBar({ currentStep, totalSteps }: { currentStep: number; totalSt
             <div className="h-1 bg-white/10 rounded-full overflow-hidden backdrop-blur-sm">
                 <motion.div
                     className="h-full"
-                    style={{ background: `linear-gradient(to right, ${ACCENT_COLOR}, #FF8C00)` }}
+                    style={{ background: `linear-gradient(to right, ${ACCENT_COLOR}, ${ACCENT_DARK})` }}
                     initial={{ width: 0 }}
                     animate={{ width: `${progress}%` }}
                     transition={{ duration: 0.8, ease: "easeOut" }}
@@ -182,131 +219,133 @@ function ProgressBar({ currentStep, totalSteps }: { currentStep: number; totalSt
     )
 }
 
-// Step indicator dots
-function StepDots({ currentStep, totalSteps }: { currentStep: number; totalSteps: number }) {
+// Typewriter Text Component
+function TypewriterText({
+    text,
+    speed = 40,
+}: {
+    text: string
+    speed?: number
+}) {
+    const [displayedText, setDisplayedText] = useState('')
+    const [isTyping, setIsTyping] = useState(true)
+
+    useState(() => {
+        let index = 0
+        setIsTyping(true)
+        const typeInterval = setInterval(() => {
+            if (index < text.length) {
+                setDisplayedText(text.slice(0, index + 1))
+                index++
+            } else {
+                clearInterval(typeInterval)
+                setIsTyping(false)
+            }
+        }, speed)
+        return () => clearInterval(typeInterval)
+    })
+
     return (
-        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex gap-2 z-20">
-            {Array.from({ length: totalSteps }).map((_, i) => (
-                <motion.div
-                    key={i}
-                    className={cn(
-                        "w-2 h-2 rounded-full transition-all duration-500",
-                        i === currentStep
-                            ? "w-6"
-                            : ""
-                    )}
-                    style={{
-                        backgroundColor: i === currentStep
-                            ? ACCENT_COLOR
-                            : i < currentStep
-                                ? `rgba(${ACCENT_COLOR_RGB}, 0.5)`
-                                : 'rgba(255, 255, 255, 0.2)'
-                    }}
-                    initial={{ scale: 0 }}
-                    animate={{ scale: 1 }}
-                    transition={{ delay: i * 0.08 }}
+        <span className="inline">
+            {displayedText}
+            {isTyping && (
+                <motion.span
+                    animate={{ opacity: [1, 0] }}
+                    transition={{ duration: 0.5, repeat: Infinity }}
+                    className="inline-block w-0.5 h-5 bg-current ml-0.5 align-middle"
                 />
-            ))}
-        </div>
+            )}
+        </span>
     )
 }
 
-// Service Type Option Component
-function ServiceTypeOption({
+// Tech Stack Option Chip
+function TechChip({
+    label,
     selected,
-    onClick,
-    icon: Icon,
-    title,
-    description
+    onClick
 }: {
-    type: ServiceType
+    label: string
     selected: boolean
     onClick: () => void
-    icon: React.ElementType
-    title: string
-    description: string
 }) {
     return (
         <motion.button
             onClick={onClick}
-            whileHover={{
-                scale: 1.03,
-                y: -5,
-                boxShadow: selected
-                    ? `0 20px 50px rgba(${ACCENT_COLOR_RGB}, 0.4)`
-                    : '0 20px 40px rgba(255, 255, 255, 0.05)'
-            }}
-            whileTap={{ scale: 0.98 }}
-            transition={{ type: "spring", stiffness: 300, damping: 20 }}
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
             className={cn(
-                "flex-1 p-6 rounded-3xl border-2 relative overflow-hidden text-left",
+                "px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 border",
                 selected
-                    ? ""
-                    : "border-white/10 bg-white/5 hover:border-white/30"
+                    ? "text-white border-transparent"
+                    : "text-white/70 border-white/20 bg-white/5 hover:border-white/40"
             )}
             style={selected ? {
-                borderColor: ACCENT_COLOR,
-                backgroundColor: `rgba(${ACCENT_COLOR_RGB}, 0.15)`,
-                boxShadow: `0 10px 40px rgba(${ACCENT_COLOR_RGB}, 0.3), inset 0 1px 0 rgba(255,255,255,0.1)`
+                backgroundColor: ACCENT_COLOR,
+                boxShadow: `0 4px 15px rgba(${ACCENT_COLOR_RGB}, 0.4)`
             } : {}}
         >
-            {selected && (
-                <motion.div
-                    className="absolute inset-0 -z-10"
-                    style={{
-                        background: `radial-gradient(circle at center, rgba(${ACCENT_COLOR_RGB}, 0.2) 0%, transparent 70%)`
-                    }}
-                    animate={{
-                        scale: [1, 1.2, 1],
-                        opacity: [0.5, 0.8, 0.5]
-                    }}
-                    transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
-                />
-            )}
-
-            <motion.div
-                animate={selected ? {
-                    scale: [1, 1.1, 1],
-                    rotate: [0, 5, -5, 0]
-                } : {}}
-                transition={{ duration: 0.5 }}
-                className="mb-3"
-            >
-                <Icon
-                    className="w-10 h-10 transition-all duration-300"
-                    style={{
-                        color: selected ? ACCENT_COLOR : 'rgba(255,255,255,0.5)',
-                        filter: selected ? `drop-shadow(0 0 10px ${ACCENT_COLOR})` : 'none'
-                    }}
-                />
-            </motion.div>
-            <span className={cn(
-                "block text-lg font-semibold transition-all duration-300",
-                selected ? "text-white" : "text-white/70"
-            )}>
-                {title}
-            </span>
-            <span className="block text-sm text-white/40 mt-1">
-                {description}
-            </span>
+            {label}
         </motion.button>
+    )
+}
+
+// Tech Category Section
+function TechCategory({
+    category,
+    label,
+    icon: Icon,
+    options,
+    selected,
+    onToggle
+}: {
+    category: string
+    label: string
+    icon: React.ElementType
+    options: string[]
+    selected: string[]
+    onToggle: (option: string) => void
+}) {
+    return (
+        <div className="mb-6">
+            <div className="flex items-center gap-2 mb-3">
+                <Icon className="w-5 h-5" style={{ color: ACCENT_COLOR }} />
+                <span className="text-white font-medium">{label}</span>
+            </div>
+            <div className="flex flex-wrap gap-2">
+                {options.map((option) => (
+                    <TechChip
+                        key={`${category}-${option}`}
+                        label={option}
+                        selected={selected.includes(option)}
+                        onClick={() => onToggle(option)}
+                    />
+                ))}
+            </div>
+        </div>
     )
 }
 
 export function WelcomeFlow({ onComplete }: { onComplete: (data: FormData) => void }) {
     const [currentStep, setCurrentStep] = useState(0)
     const [formData, setFormData] = useState<FormData>({
-        fullName: '',
+        name: '',
         email: '',
         phone: '',
-        preferredContact: null,
-        serviceType: null,
-        expectations: '',
-        comments: '',
+        companyName: '',
+        otherContacts: [],
+        techStack: {
+            website: [],
+            mobileApp: [],
+            crm: [],
+            cookieManagement: []
+        },
+        objective: '',
     })
     const [direction, setDirection] = useState(1)
     const [showMessage, setShowMessage] = useState(false)
     const [currentMessage, setCurrentMessage] = useState('')
+    const [newContact, setNewContact] = useState<ContactPerson>({ name: '', email: '' })
 
     const currentStepData = steps[currentStep]
     const isLastStep = currentStep === steps.length - 1
@@ -315,17 +354,19 @@ export function WelcomeFlow({ onComplete }: { onComplete: (data: FormData) => vo
     const canProceed = () => {
         switch (currentStepData.id) {
             case 'name':
-                return formData.fullName.trim().length >= 2
+                return formData.name.trim().length >= 2
+            case 'email':
+                return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)
             case 'phone':
                 return formData.phone.trim().length >= 6
-            case 'contact':
-                return formData.preferredContact !== null
-            case 'serviceType':
-                return formData.serviceType !== null
-            case 'expectations':
-                return formData.expectations.trim().length >= 10
-            case 'comments':
-                return true
+            case 'company':
+                return formData.companyName.trim().length >= 2
+            case 'contacts':
+                return true // Optional step
+            case 'techStack':
+                return true // Optional but encouraged
+            case 'objective':
+                return formData.objective.trim().length >= 10
             default:
                 return true
         }
@@ -338,20 +379,18 @@ export function WelcomeFlow({ onComplete }: { onComplete: (data: FormData) => vo
 
     const handleNext = () => {
         if (canProceed() && currentStep < steps.length - 1) {
-            // Show creative message first
             const stepId = currentStepData.id
             if (creativeMessages[stepId]) {
                 setCurrentMessage(getRandomMessage(stepId))
                 setShowMessage(true)
 
-                // Wait for message to display, then advance
                 setTimeout(() => {
                     setShowMessage(false)
                     setTimeout(() => {
                         setDirection(1)
                         setCurrentStep(prev => prev + 1)
                     }, 300)
-                }, 2500)
+                }, 2000)
             } else {
                 setDirection(1)
                 setCurrentStep(prev => prev + 1)
@@ -375,6 +414,34 @@ export function WelcomeFlow({ onComplete }: { onComplete: (data: FormData) => vo
 
     const handleComplete = () => {
         onComplete(formData)
+    }
+
+    const addContact = () => {
+        if (newContact.name.trim() && newContact.email.trim()) {
+            setFormData({
+                ...formData,
+                otherContacts: [...formData.otherContacts, { ...newContact }]
+            })
+            setNewContact({ name: '', email: '' })
+        }
+    }
+
+    const removeContact = (index: number) => {
+        setFormData({
+            ...formData,
+            otherContacts: formData.otherContacts.filter((_, i) => i !== index)
+        })
+    }
+
+    const toggleTechOption = (category: keyof TechStack, option: string) => {
+        const current = formData.techStack[category]
+        const updated = current.includes(option)
+            ? current.filter(o => o !== option)
+            : [...current, option]
+        setFormData({
+            ...formData,
+            techStack: { ...formData.techStack, [category]: updated }
+        })
     }
 
     const slideVariants = {
@@ -412,7 +479,7 @@ export function WelcomeFlow({ onComplete }: { onComplete: (data: FormData) => vo
                     damping: 25,
                     duration: 0.8
                 }}
-                className="absolute inset-0 flex flex-col items-center justify-center px-4"
+                className="absolute inset-0 flex flex-col items-center justify-center px-4 overflow-y-auto py-20"
                 onKeyDown={handleKeyDown}
             >
                 {/* Icon */}
@@ -420,7 +487,7 @@ export function WelcomeFlow({ onComplete }: { onComplete: (data: FormData) => vo
                     initial={{ scale: 0, rotate: -180 }}
                     animate={{ scale: 1, rotate: 0 }}
                     transition={{ delay: 0.4, type: "spring", stiffness: 120, duration: 0.8 }}
-                    className="mb-8"
+                    className="mb-8 flex-shrink-0"
                 >
                     <div className="relative">
                         <div
@@ -444,7 +511,7 @@ export function WelcomeFlow({ onComplete }: { onComplete: (data: FormData) => vo
                     initial={{ y: 30, opacity: 0 }}
                     animate={{ y: 0, opacity: 1 }}
                     transition={{ delay: 0.5, duration: 0.6 }}
-                    className="text-3xl md:text-4xl font-bold text-white mb-2 text-center"
+                    className="text-3xl md:text-4xl font-bold text-white mb-2 text-center flex-shrink-0"
                 >
                     {currentStepData.title}
                 </motion.h1>
@@ -454,7 +521,7 @@ export function WelcomeFlow({ onComplete }: { onComplete: (data: FormData) => vo
                     initial={{ y: 30, opacity: 0 }}
                     animate={{ y: 0, opacity: 1 }}
                     transition={{ delay: 0.65, duration: 0.6 }}
-                    className="text-lg text-white/60 mb-8 text-center"
+                    className="text-lg text-white/60 mb-8 text-center flex-shrink-0"
                 >
                     {currentStepData.subtitle}
                 </motion.p>
@@ -471,9 +538,9 @@ export function WelcomeFlow({ onComplete }: { onComplete: (data: FormData) => vo
                             autoFocus
                             type="text"
                             placeholder="Enter your full name"
-                            value={formData.fullName}
-                            onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
-                            className="h-16 md:h-18 text-xl md:text-2xl bg-white/5 border-white/20 text-white placeholder:text-white/40 transition-all rounded-2xl px-6 focus:border-blue-500/60 focus:ring-blue-500/30"
+                            value={formData.name}
+                            onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                            className="h-16 md:h-18 text-xl md:text-2xl bg-white/5 border-white/20 text-white placeholder:text-white/40 transition-all rounded-2xl px-6 focus:border-[#dd3333]/60 focus:ring-[#dd3333]/30"
                         />
                     )}
 
@@ -481,10 +548,10 @@ export function WelcomeFlow({ onComplete }: { onComplete: (data: FormData) => vo
                         <Input
                             autoFocus
                             type="email"
-                            placeholder="you@example.com"
+                            placeholder="you@company.com"
                             value={formData.email}
                             onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                            className="h-16 md:h-18 text-xl md:text-2xl bg-white/5 border-white/20 text-white placeholder:text-white/40 transition-all rounded-2xl px-6 focus:border-blue-500/60 focus:ring-blue-500/30"
+                            className="h-16 md:h-18 text-xl md:text-2xl bg-white/5 border-white/20 text-white placeholder:text-white/40 transition-all rounded-2xl px-6 focus:border-[#dd3333]/60 focus:ring-[#dd3333]/30"
                         />
                     )}
 
@@ -495,189 +562,94 @@ export function WelcomeFlow({ onComplete }: { onComplete: (data: FormData) => vo
                             placeholder="+1 (555) 000-0000"
                             value={formData.phone}
                             onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                            className="h-16 md:h-18 text-xl md:text-2xl bg-white/5 border-white/20 text-white placeholder:text-white/40 transition-all rounded-2xl px-6 focus:border-blue-500/60 focus:ring-blue-500/30"
+                            className="h-16 md:h-18 text-xl md:text-2xl bg-white/5 border-white/20 text-white placeholder:text-white/40 transition-all rounded-2xl px-6 focus:border-[#dd3333]/60 focus:ring-[#dd3333]/30"
                         />
                     )}
 
-                    {currentStepData.id === 'contact' && (
-                        <div className="flex flex-col sm:flex-row gap-6">
-                            <motion.button
-                                onClick={() => setFormData({ ...formData, preferredContact: 'email' })}
-                                whileHover={{
-                                    scale: 1.03,
-                                    y: -5,
-                                    boxShadow: formData.preferredContact === 'email'
-                                        ? `0 20px 50px rgba(${ACCENT_COLOR_RGB}, 0.4)`
-                                        : '0 20px 40px rgba(255, 255, 255, 0.05)'
-                                }}
-                                whileTap={{ scale: 0.98 }}
-                                transition={{ type: "spring", stiffness: 300, damping: 20 }}
-                                className={cn(
-                                    "flex-1 p-10 rounded-3xl border-2 relative overflow-hidden",
-                                    formData.preferredContact === 'email'
-                                        ? ""
-                                        : "border-white/10 bg-white/5 hover:border-white/30"
-                                )}
-                                style={formData.preferredContact === 'email' ? {
-                                    borderColor: ACCENT_COLOR,
-                                    backgroundColor: `rgba(${ACCENT_COLOR_RGB}, 0.15)`,
-                                    boxShadow: `0 10px 40px rgba(${ACCENT_COLOR_RGB}, 0.3), inset 0 1px 0 rgba(255,255,255,0.1)`
-                                } : {}}
-                            >
-                                {formData.preferredContact === 'email' && (
-                                    <motion.div
-                                        className="absolute inset-0 -z-10"
-                                        style={{
-                                            background: `radial-gradient(circle at center, rgba(${ACCENT_COLOR_RGB}, 0.2) 0%, transparent 70%)`
-                                        }}
-                                        animate={{
-                                            scale: [1, 1.2, 1],
-                                            opacity: [0.5, 0.8, 0.5]
-                                        }}
-                                        transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
-                                    />
-                                )}
-
-                                <motion.div
-                                    animate={formData.preferredContact === 'email' ? {
-                                        scale: [1, 1.1, 1],
-                                        rotate: [0, 5, -5, 0]
-                                    } : {}}
-                                    transition={{ duration: 0.5 }}
-                                >
-                                    <Mail
-                                        className="w-14 h-14 mb-4 mx-auto transition-all duration-300"
-                                        style={{
-                                            color: formData.preferredContact === 'email' ? ACCENT_COLOR : 'rgba(255,255,255,0.5)',
-                                            filter: formData.preferredContact === 'email' ? `drop-shadow(0 0 10px ${ACCENT_COLOR})` : 'none'
-                                        }}
-                                    />
-                                </motion.div>
-                                <span className={cn(
-                                    "block text-xl font-semibold transition-all duration-300",
-                                    formData.preferredContact === 'email' ? "text-white" : "text-white/70"
-                                )}>
-                                    Email
-                                </span>
-                                <span className="block text-sm text-white/40 mt-2">
-                                    We'll send updates via email
-                                </span>
-                            </motion.button>
-
-                            <motion.button
-                                onClick={() => setFormData({ ...formData, preferredContact: 'phone' })}
-                                whileHover={{
-                                    scale: 1.03,
-                                    y: -5,
-                                    boxShadow: formData.preferredContact === 'phone'
-                                        ? `0 20px 50px rgba(${ACCENT_COLOR_RGB}, 0.4)`
-                                        : '0 20px 40px rgba(255, 255, 255, 0.05)'
-                                }}
-                                whileTap={{ scale: 0.98 }}
-                                transition={{ type: "spring", stiffness: 300, damping: 20 }}
-                                className={cn(
-                                    "flex-1 p-10 rounded-3xl border-2 relative overflow-hidden",
-                                    formData.preferredContact === 'phone'
-                                        ? ""
-                                        : "border-white/10 bg-white/5 hover:border-white/30"
-                                )}
-                                style={formData.preferredContact === 'phone' ? {
-                                    borderColor: ACCENT_COLOR,
-                                    backgroundColor: `rgba(${ACCENT_COLOR_RGB}, 0.15)`,
-                                    boxShadow: `0 10px 40px rgba(${ACCENT_COLOR_RGB}, 0.3), inset 0 1px 0 rgba(255,255,255,0.1)`
-                                } : {}}
-                            >
-                                {formData.preferredContact === 'phone' && (
-                                    <motion.div
-                                        className="absolute inset-0 -z-10"
-                                        style={{
-                                            background: `radial-gradient(circle at center, rgba(${ACCENT_COLOR_RGB}, 0.2) 0%, transparent 70%)`
-                                        }}
-                                        animate={{
-                                            scale: [1, 1.2, 1],
-                                            opacity: [0.5, 0.8, 0.5]
-                                        }}
-                                        transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
-                                    />
-                                )}
-
-                                <motion.div
-                                    animate={formData.preferredContact === 'phone' ? {
-                                        scale: [1, 1.1, 1],
-                                        rotate: [0, -5, 5, 0]
-                                    } : {}}
-                                    transition={{ duration: 0.5 }}
-                                >
-                                    <Phone
-                                        className="w-14 h-14 mb-4 mx-auto transition-all duration-300"
-                                        style={{
-                                            color: formData.preferredContact === 'phone' ? ACCENT_COLOR : 'rgba(255,255,255,0.5)',
-                                            filter: formData.preferredContact === 'phone' ? `drop-shadow(0 0 10px ${ACCENT_COLOR})` : 'none'
-                                        }}
-                                    />
-                                </motion.div>
-                                <span className={cn(
-                                    "block text-xl font-semibold transition-all duration-300",
-                                    formData.preferredContact === 'phone' ? "text-white" : "text-white/70"
-                                )}>
-                                    Phone
-                                </span>
-                                <span className="block text-sm text-white/40 mt-2">
-                                    We'll call you directly
-                                </span>
-                            </motion.button>
-                        </div>
-                    )}
-
-                    {/* Service Type Selection - NEW */}
-                    {currentStepData.id === 'serviceType' && (
-                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                            <ServiceTypeOption
-                                type="voice_agent"
-                                selected={formData.serviceType === 'voice_agent'}
-                                onClick={() => setFormData({ ...formData, serviceType: 'voice_agent' })}
-                                icon={Bot}
-                                title="AI Voice Agent"
-                                description="Intelligent phone handling & conversations"
-                            />
-                            <ServiceTypeOption
-                                type="automation"
-                                selected={formData.serviceType === 'automation'}
-                                onClick={() => setFormData({ ...formData, serviceType: 'automation' })}
-                                icon={Zap}
-                                title="Automation"
-                                description="Workflow & process automation"
-                            />
-                            <ServiceTypeOption
-                                type="both"
-                                selected={formData.serviceType === 'both'}
-                                onClick={() => setFormData({ ...formData, serviceType: 'both' })}
-                                icon={Layers}
-                                title="Both"
-                                description="Complete AI-powered solution"
-                            />
-                        </div>
-                    )}
-
-                    {currentStepData.id === 'expectations' && (
-                        <Textarea
+                    {currentStepData.id === 'company' && (
+                        <Input
                             autoFocus
-                            placeholder="Tell us about your goals and what you hope to achieve..."
-                            value={formData.expectations}
-                            onChange={(e) => setFormData({ ...formData, expectations: e.target.value })}
-                            rows={6}
-                            className="text-xl bg-white/5 border-white/20 text-white placeholder:text-white/40 transition-all resize-none rounded-2xl p-5 focus:border-blue-500/60 focus:ring-blue-500/30 min-h-[200px]"
+                            type="text"
+                            placeholder="Your company name"
+                            value={formData.companyName}
+                            onChange={(e) => setFormData({ ...formData, companyName: e.target.value })}
+                            className="h-16 md:h-18 text-xl md:text-2xl bg-white/5 border-white/20 text-white placeholder:text-white/40 transition-all rounded-2xl px-6 focus:border-[#dd3333]/60 focus:ring-[#dd3333]/30"
                         />
                     )}
 
-                    {currentStepData.id === 'comments' && (
+                    {currentStepData.id === 'contacts' && (
+                        <div className="space-y-4">
+                            {/* Existing contacts */}
+                            {formData.otherContacts.map((contact, index) => (
+                                <div key={index} className="flex items-center gap-2 p-4 bg-white/5 rounded-xl border border-white/10">
+                                    <div className="flex-1">
+                                        <p className="text-white font-medium">{contact.name}</p>
+                                        <p className="text-white/60 text-sm">{contact.email}</p>
+                                    </div>
+                                    <Button
+                                        variant="ghost"
+                                        size="icon"
+                                        onClick={() => removeContact(index)}
+                                        className="text-white/50 hover:text-white hover:bg-white/10"
+                                    >
+                                        <X className="h-4 w-4" />
+                                    </Button>
+                                </div>
+                            ))}
+
+                            {/* Add new contact form */}
+                            <div className="space-y-3">
+                                <Input
+                                    type="text"
+                                    placeholder="Contact name"
+                                    value={newContact.name}
+                                    onChange={(e) => setNewContact({ ...newContact, name: e.target.value })}
+                                    className="h-14 text-lg bg-white/5 border-white/20 text-white placeholder:text-white/40 rounded-xl px-4 focus:border-[#dd3333]/60 focus:ring-[#dd3333]/30"
+                                />
+                                <Input
+                                    type="email"
+                                    placeholder="Contact email"
+                                    value={newContact.email}
+                                    onChange={(e) => setNewContact({ ...newContact, email: e.target.value })}
+                                    className="h-14 text-lg bg-white/5 border-white/20 text-white placeholder:text-white/40 rounded-xl px-4 focus:border-[#dd3333]/60 focus:ring-[#dd3333]/30"
+                                />
+                                <Button
+                                    onClick={addContact}
+                                    disabled={!newContact.name.trim() || !newContact.email.trim()}
+                                    className="w-full h-12 rounded-xl"
+                                    style={{ backgroundColor: ACCENT_COLOR }}
+                                >
+                                    <Plus className="h-4 w-4 mr-2" />
+                                    Add Contact
+                                </Button>
+                            </div>
+                        </div>
+                    )}
+
+                    {currentStepData.id === 'techStack' && (
+                        <div className="max-h-[50vh] overflow-y-auto pr-2 space-y-2">
+                            {Object.entries(techStackOptions).map(([key, { label, icon, options }]) => (
+                                <TechCategory
+                                    key={key}
+                                    category={key}
+                                    label={label}
+                                    icon={icon}
+                                    options={options}
+                                    selected={formData.techStack[key as keyof TechStack]}
+                                    onToggle={(option) => toggleTechOption(key as keyof TechStack, option)}
+                                />
+                            ))}
+                        </div>
+                    )}
+
+                    {currentStepData.id === 'objective' && (
                         <Textarea
                             autoFocus
-                            placeholder="Any additional information you'd like to share? (Optional)"
-                            value={formData.comments}
-                            onChange={(e) => setFormData({ ...formData, comments: e.target.value })}
+                            placeholder="Tell us about your goals and what you hope to achieve with Data Revolt Agency..."
+                            value={formData.objective}
+                            onChange={(e) => setFormData({ ...formData, objective: e.target.value })}
                             rows={6}
-                            className="text-xl bg-white/5 border-white/20 text-white placeholder:text-white/40 transition-all resize-none rounded-2xl p-5 focus:border-blue-500/60 focus:ring-blue-500/30 min-h-[200px]"
+                            className="text-xl bg-white/5 border-white/20 text-white placeholder:text-white/40 transition-all resize-none rounded-2xl p-5 focus:border-[#dd3333]/60 focus:ring-[#dd3333]/30 min-h-[200px]"
                         />
                     )}
 
@@ -700,15 +672,20 @@ export function WelcomeFlow({ onComplete }: { onComplete: (data: FormData) => vo
                                     <Check className="w-12 h-12 text-white" />
                                 </div>
                             </motion.div>
-                            <motion.p
+                            <motion.div
                                 initial={{ opacity: 0, y: 20 }}
                                 animate={{ opacity: 1, y: 0 }}
                                 transition={{ delay: 0.6 }}
-                                className="text-white/60 text-lg"
+                                className="space-y-4"
                             >
-                                Thank you, <span className="text-white font-semibold">{formData.fullName}</span>!<br />
-                                We're excited to work with you.
-                            </motion.p>
+                                <p className="text-white/60 text-lg">
+                                    Thank you, <span className="text-white font-semibold">{formData.name}</span>!<br />
+                                    We're excited to work with <span className="text-white font-semibold">{formData.companyName}</span>.
+                                </p>
+                                <p className="text-white/40 text-base">
+                                    Our team will review your submission and get back to you shortly.
+                                </p>
+                            </motion.div>
                         </div>
                     )}
                 </motion.div>
@@ -718,7 +695,7 @@ export function WelcomeFlow({ onComplete }: { onComplete: (data: FormData) => vo
 
     return (
         <div className="fixed inset-0 bg-[#0a0a0f] overflow-hidden">
-            {/* Animated Background */}
+            {/* Animated Background with DRA Red */}
             <div className="absolute inset-0">
                 <FloatingOrb
                     className="w-[600px] h-[600px] top-[-200px] left-[-200px]"
@@ -731,9 +708,17 @@ export function WelcomeFlow({ onComplete }: { onComplete: (data: FormData) => vo
                 />
                 <FloatingOrb
                     className="w-[400px] h-[400px] top-[30%] right-[10%]"
-                    color="rgba(139, 92, 246, 0.08)"
+                    color="rgba(181, 40, 40, 0.08)"
                     delay={4}
                 />
+            </div>
+
+            {/* DRA Logo */}
+            <div className="absolute top-8 left-8 z-30 flex items-center gap-3">
+                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-[#dd3333] to-[#b52828] shadow-lg shadow-red-500/30">
+                    <span className="text-xs font-bold text-white">DRA</span>
+                </div>
+                <span className="font-semibold text-lg text-white">Onboarding</span>
             </div>
 
             {/* Progress Bar */}
@@ -762,10 +747,10 @@ export function WelcomeFlow({ onComplete }: { onComplete: (data: FormData) => vo
                             </div>
                             <motion.div
                                 className="h-1 w-32 mx-auto rounded-full mt-6"
-                                style={{ background: `linear-gradient(to right, ${ACCENT_COLOR}, #FF8C00)` }}
+                                style={{ background: `linear-gradient(to right, ${ACCENT_COLOR}, ${ACCENT_DARK})` }}
                                 initial={{ scaleX: 0 }}
                                 animate={{ scaleX: 1 }}
-                                transition={{ duration: 2.2, ease: "easeInOut" }}
+                                transition={{ duration: 1.8, ease: "easeInOut" }}
                             />
                         </motion.div>
                     </motion.div>
@@ -781,7 +766,7 @@ export function WelcomeFlow({ onComplete }: { onComplete: (data: FormData) => vo
 
             {/* Navigation */}
             {!showMessage && (
-                <div className="absolute bottom-24 left-1/2 -translate-x-1/2 flex items-center gap-4 z-20">
+                <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex items-center gap-4 z-20">
                     {currentStep > 0 && !isComplete && (
                         <motion.div
                             initial={{ opacity: 0, x: -20 }}
@@ -800,46 +785,39 @@ export function WelcomeFlow({ onComplete }: { onComplete: (data: FormData) => vo
                         </motion.div>
                     )}
 
-                    {!isComplete && (
+                    {!isLastStep ? (
                         <motion.div
-                            whileHover={{ scale: canProceed() ? 1.05 : 1 }}
-                            whileTap={{ scale: canProceed() ? 0.95 : 1 }}
+                            initial={{ opacity: 0, x: 20 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            exit={{ opacity: 0, x: 20 }}
                         >
                             <Button
                                 size="lg"
                                 onClick={handleNext}
                                 disabled={!canProceed()}
-                                className="text-white rounded-xl h-14 px-8 text-lg font-medium shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
+                                className="rounded-xl h-14 px-8 text-white font-semibold shadow-lg disabled:opacity-50"
                                 style={{
-                                    background: canProceed()
-                                        ? `linear-gradient(135deg, ${ACCENT_COLOR} 0%, #FF8C00 100%)`
-                                        : 'rgba(255, 255, 255, 0.1)',
-                                    boxShadow: canProceed()
-                                        ? `0 10px 40px rgba(${ACCENT_COLOR_RGB}, 0.4)`
-                                        : 'none'
+                                    background: `linear-gradient(to right, ${ACCENT_COLOR}, ${ACCENT_DARK})`,
+                                    boxShadow: canProceed() ? `0 10px 30px rgba(${ACCENT_COLOR_RGB}, 0.4)` : 'none'
                                 }}
                             >
                                 Continue
                                 <ChevronRight className="ml-2 h-5 w-5" />
                             </Button>
                         </motion.div>
-                    )}
-
-                    {isComplete && (
+                    ) : (
                         <motion.div
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
+                            initial={{ opacity: 0, scale: 0.8 }}
+                            animate={{ opacity: 1, scale: 1 }}
                             transition={{ delay: 0.8 }}
-                            whileHover={{ scale: 1.05 }}
-                            whileTap={{ scale: 0.95 }}
                         >
                             <Button
                                 size="lg"
                                 onClick={handleComplete}
-                                className="text-white rounded-xl h-14 px-10 text-lg font-medium"
+                                className="rounded-xl h-14 px-8 text-white font-semibold shadow-lg"
                                 style={{
-                                    background: `linear-gradient(135deg, ${ACCENT_COLOR} 0%, #FF8C00 100%)`,
-                                    boxShadow: `0 10px 40px rgba(${ACCENT_COLOR_RGB}, 0.4)`
+                                    background: `linear-gradient(to right, ${ACCENT_COLOR}, ${ACCENT_DARK})`,
+                                    boxShadow: `0 10px 30px rgba(${ACCENT_COLOR_RGB}, 0.4)`
                                 }}
                             >
                                 Go to Dashboard
@@ -849,9 +827,6 @@ export function WelcomeFlow({ onComplete }: { onComplete: (data: FormData) => vo
                     )}
                 </div>
             )}
-
-            {/* Step Dots */}
-            <StepDots currentStep={currentStep} totalSteps={steps.length} />
         </div>
     )
 }

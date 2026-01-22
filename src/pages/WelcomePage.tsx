@@ -1,17 +1,32 @@
 import { useNavigate } from '@tanstack/react-router'
 import { WelcomeFlow } from '@/components/onboarding/WelcomeFlow'
 
+interface ContactPerson {
+    name: string
+    email: string
+}
+
+interface TechStack {
+    website: string[]
+    mobileApp: string[]
+    crm: string[]
+    cookieManagement: string[]
+}
+
+interface FormData {
+    name: string
+    email: string
+    phone: string
+    companyName: string
+    otherContacts: ContactPerson[]
+    techStack: TechStack
+    objective: string
+}
+
 export function WelcomePage() {
     const navigate = useNavigate()
 
-    const handleComplete = (data: {
-        fullName: string
-        email: string
-        phone: string
-        preferredContact: 'email' | 'phone' | null
-        expectations: string
-        comments: string
-    }) => {
+    const handleComplete = (data: FormData) => {
         // In a real app, you'd save this data to your backend
         console.log('Onboarding completed:', data)
 

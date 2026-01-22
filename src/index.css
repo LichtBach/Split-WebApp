@@ -4,56 +4,57 @@
 
 @layer base {
   :root {
+    /* Data Revolt Agency Brand Colors */
     --background: 0 0% 100%;
-    --foreground: 0 0% 0%;
+    --foreground: 0 0% 7%;
     --card: 0 0% 100%;
-    --card-foreground: 0 0% 0%;
+    --card-foreground: 0 0% 7%;
     --popover: 0 0% 100%;
-    --popover-foreground: 0 0% 0%;
-    --primary: 217 89% 61%;
+    --popover-foreground: 0 0% 7%;
+    --primary: 0 72% 53%;
     --primary-foreground: 0 0% 100%;
     --secondary: 0 0% 96%;
-    --secondary-foreground: 0 0% 0%;
+    --secondary-foreground: 0 0% 7%;
     --muted: 0 0% 96%;
     --muted-foreground: 0 0% 45%;
-    --accent: 217 89% 61%;
+    --accent: 0 72% 53%;
     --accent-foreground: 0 0% 100%;
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 0 0% 98%;
+    --destructive: 0 72% 53%;
+    --destructive-foreground: 0 0% 100%;
     --border: 0 0% 90%;
     --input: 0 0% 90%;
-    --ring: 217 89% 61%;
+    --ring: 0 72% 53%;
     --radius: 0.75rem;
-    --chart-1: 217 89% 61%;
-    --chart-2: 217 70% 50%;
-    --chart-3: 217 60% 40%;
+    --chart-1: 0 72% 53%;
+    --chart-2: 0 60% 45%;
+    --chart-3: 0 50% 35%;
     --chart-4: 0 0% 30%;
     --chart-5: 0 0% 50%;
   }
 
   .dark {
-    --background: 0 0% 5%;
+    --background: 0 0% 4%;
     --foreground: 0 0% 98%;
     --card: 0 0% 8%;
     --card-foreground: 0 0% 98%;
     --popover: 0 0% 8%;
     --popover-foreground: 0 0% 98%;
-    --primary: 217 89% 61%;
+    --primary: 0 72% 53%;
     --primary-foreground: 0 0% 100%;
-    --secondary: 0 0% 15%;
+    --secondary: 0 0% 12%;
     --secondary-foreground: 0 0% 98%;
-    --muted: 0 0% 15%;
-    --muted-foreground: 0 0% 55%;
-    --accent: 217 89% 61%;
+    --muted: 0 0% 12%;
+    --muted-foreground: 0 0% 64%;
+    --accent: 0 72% 53%;
     --accent-foreground: 0 0% 100%;
-    --destructive: 0 62.8% 50%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 0 0% 20%;
-    --input: 0 0% 15%;
-    --ring: 217 89% 61%;
-    --chart-1: 217 89% 61%;
-    --chart-2: 217 70% 50%;
-    --chart-3: 217 60% 40%;
+    --destructive: 0 72% 53%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 0 0% 16%;
+    --input: 0 0% 12%;
+    --ring: 0 72% 53%;
+    --chart-1: 0 72% 53%;
+    --chart-2: 0 60% 45%;
+    --chart-3: 0 50% 35%;
     --chart-4: 0 0% 40%;
     --chart-5: 0 0% 60%;
   }
@@ -136,28 +137,28 @@
   box-shadow: 0 0 0 3px hsl(var(--primary) / 0.15);
 }
 
-/* Gradient text utility - orange accent */
+/* Gradient text utility - DRA Red */
 .gradient-text {
-  background: linear-gradient(135deg, #FF6B00 0%, #FF8C00 50%, #FFA500 100%);
+  background: linear-gradient(135deg, #dd3333 0%, #b52828 50%, #991f1f 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
 
-/* Gradient background utility - orange */
+/* Gradient background utility - DRA Red */
 .gradient-bg {
-  background: linear-gradient(135deg, #FF6B00 0%, #FF8C00 50%, #FFA500 100%);
+  background: linear-gradient(135deg, #dd3333 0%, #b52828 50%, #991f1f 100%);
 }
 
 /* Subtle gradient for buttons */
 .gradient-btn {
-  background: linear-gradient(135deg, #FF6B00 0%, #FF8C00 100%);
-  box-shadow: 0 4px 15px rgba(255, 107, 0, 0.4);
+  background: linear-gradient(135deg, #dd3333 0%, #c42d2d 100%);
+  box-shadow: 0 4px 15px rgba(221, 51, 51, 0.4);
   transition: all 0.3s ease;
 }
 
 .gradient-btn:hover {
-  box-shadow: 0 6px 25px rgba(255, 107, 0, 0.6);
+  box-shadow: 0 6px 25px rgba(221, 51, 51, 0.6);
   transform: translateY(-1px);
 }
 
@@ -287,7 +288,34 @@ input[type="date"]::-webkit-calendar-picker-indicator:hover {
   border-right: 1px solid hsl(var(--border) / 0.3);
 }
 
-/* Orange glow orb for backgrounds - optimized for performance */
+/* Red glow orb for backgrounds - DRA brand */
+.red-glow-orb {
+  position: fixed;
+  border-radius: 50%;
+  filter: blur(60px);
+  pointer-events: none;
+  z-index: 0;
+  will-change: transform;
+  transform: translateZ(0);
+}
+
+.red-glow-orb-1 {
+  width: 500px;
+  height: 500px;
+  background: rgba(221, 51, 51, 0.12);
+  top: -150px;
+  left: -150px;
+}
+
+.red-glow-orb-2 {
+  width: 350px;
+  height: 350px;
+  background: rgba(181, 40, 40, 0.08);
+  bottom: -80px;
+  right: -80px;
+}
+
+/* Legacy orange orb classes - redirect to red */
 .orange-glow-orb {
   position: fixed;
   border-radius: 50%;
@@ -296,13 +324,12 @@ input[type="date"]::-webkit-calendar-picker-indicator:hover {
   z-index: 0;
   will-change: transform;
   transform: translateZ(0);
-  /* Force GPU layer */
 }
 
 .orange-glow-orb-1 {
   width: 500px;
   height: 500px;
-  background: rgba(255, 107, 0, 0.12);
+  background: rgba(221, 51, 51, 0.12);
   top: -150px;
   left: -150px;
 }
@@ -310,19 +337,19 @@ input[type="date"]::-webkit-calendar-picker-indicator:hover {
 .orange-glow-orb-2 {
   width: 350px;
   height: 350px;
-  background: rgba(255, 140, 0, 0.08);
+  background: rgba(181, 40, 40, 0.08);
   bottom: -80px;
   right: -80px;
 }
 
-/* Status colors with orange theme */
+/* Status colors with DRA Red theme */
 .status-todo {
   background: hsl(240 5% 25%);
   color: hsl(0 0% 70%);
 }
 
 .status-in-progress {
-  background: linear-gradient(135deg, #FF6B00 0%, #FF8C00 100%);
+  background: linear-gradient(135deg, #dd3333 0%, #c42d2d 100%);
 }
 
 .status-in-review {
@@ -339,13 +366,13 @@ input[type="date"]::-webkit-calendar-picker-indicator:hover {
 
 /* Priority badges with glow */
 .priority-urgent {
-  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
-  box-shadow: 0 0 10px rgba(239, 68, 68, 0.4);
+  background: linear-gradient(135deg, #dd3333 0%, #b52828 100%);
+  box-shadow: 0 0 10px rgba(221, 51, 51, 0.4);
 }
 
 .priority-high {
-  background: linear-gradient(135deg, #FF6B00 0%, #FF8C00 100%);
-  box-shadow: 0 0 10px rgba(255, 107, 0, 0.3);
+  background: linear-gradient(135deg, #dd3333 0%, #c42d2d 100%);
+  box-shadow: 0 0 10px rgba(221, 51, 51, 0.3);
 }
 
 .priority-medium {

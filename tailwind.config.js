@@ -42,12 +42,19 @@ export default {
                     foreground: "hsl(var(--card-foreground))",
                 },
                 success: {
-                    DEFAULT: "#10b981",
+                    DEFAULT: "#22c55e",
                     foreground: "#ffffff",
                 },
                 warning: {
-                    DEFAULT: "#f59e0b",
+                    DEFAULT: "#eab308",
                     foreground: "#ffffff",
+                },
+                // DRA Brand Colors
+                dra: {
+                    red: "#dd3333",
+                    "red-dark": "#b52828",
+                    "red-darker": "#991f1f",
+                    black: "#121212",
                 },
                 chart: {
                     1: "hsl(var(--chart-1))",
@@ -75,8 +82,8 @@ export default {
                     "100%": { transform: "translateX(0)" },
                 },
                 "pulse-glow": {
-                    "0%, 100%": { boxShadow: "0 0 20px rgba(102, 126, 234, 0.3)" },
-                    "50%": { boxShadow: "0 0 40px rgba(102, 126, 234, 0.6)" },
+                    "0%, 100%": { boxShadow: "0 0 20px rgba(221, 51, 51, 0.3)" },
+                    "50%": { boxShadow: "0 0 40px rgba(221, 51, 51, 0.6)" },
                 },
             },
             animation: {
