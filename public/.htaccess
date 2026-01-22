@@ -1,55 +1,9 @@
-# Enable rewrite engine
-RewriteEngine On
-RewriteBase /
-
-# Force correct MIME types using Header directive
-<IfModule mod_headers.c>
-    <FilesMatch "\.js$">
-        Header set Content-Type "text/javascript"
-    </FilesMatch>
-    <FilesMatch "\.mjs$">
-        Header set Content-Type "text/javascript"
-    </FilesMatch>
-    <FilesMatch "\.css$">
-        Header set Content-Type "text/css"
-    </FilesMatch>
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteBase /
+  RewriteRule ^index\.html$ - [L]
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteCond %{REQUEST_FILENAME} !-l
+  RewriteRule . /index.html [L]
 </IfModule>
-
-# Set MIME types (multiple methods for compatibility)
-<IfModule mod_mime.c>
-    AddType text/javascript .js
-    AddType text/javascript .mjs
-    AddType text/css .css
-    AddType image/svg+xml .svg
-    AddType application/json .json
-</IfModule>
-
-# Alternative: DefaultType for JS files
-<FilesMatch "\.js$">
-    ForceType text/javascript
-</FilesMatch>
-
-# Handle SPA routing - serve index.html for all non-file/non-directory requests
-RewriteCond %{REQUEST_FILENAME} !-f
-RewriteCond %{REQUEST_FILENAME} !-d
-RewriteRule ^ index.html [L]
-
-# Prevent access to sensitive files
-<FilesMatch "^\.(?!htaccess)">
-    Require all denied
-</FilesMatch>
-
-# Enable gzip compression
-<IfModule mod_deflate.c>
-    AddOutputFilterByType DEFLATE text/html text/plain text/xml text/css text/javascript application/javascript application/json
-</IfModule>
-
-# Security headers
-<IfModule mod_headers.c>
-    Header set X-Frame-Options "SAMEORIGIN"
-    Header set X-XSS-Protection "1; mode=block"
-    Header set X-Content-Type-Options "nosniff"
-</IfModule>
-
-# Redirect all requests to index.html for client-side routing
-ErrorDocument 404 /index.html

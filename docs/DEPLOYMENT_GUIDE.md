@@ -65,5 +65,12 @@ cp -r dist/* .
 ```
 
 ## ✅ Troubleshooting
-- **404 Errors on Refresh**: Since this is a Single Page App (SPA), you need to configure Nginx/Apache to redirect all requests to `index.html`.
+- **MIME type ('text/html') is not a supported stylesheet MIME type**:
+  - This typically means your browser (or Varnish cache) is loading an old `index.html` that points to a CSS file that no longer exists (because the new build created a new filename).
+  - **Solution**: 
+    1. **Purge Varnish Cache** in your Cloudways Application Settings.
+    2. Clear your browser cache or try an Incognito window.
+    3. Ensure `assets` folder exists in your `public_html`.
+- **404 Errors on Refresh**: Since this is a Single Page App (SPA), you need to configure Nginx/Apache to redirect all requests to `index.html`. 
+  - We have included a `.htaccess` file in `public/` that handles this automatically for Apache servers.
 - **White Screen**: Check the browser console. Did you forget to run `npm run build`?
