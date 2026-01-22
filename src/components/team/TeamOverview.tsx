@@ -30,6 +30,7 @@ const statusConfig = {
     active: { label: 'Active', color: 'text-green-500' },
     away: { label: 'Away', color: 'text-yellow-500' },
     offline: { label: 'Offline', color: 'text-gray-500' },
+    busy: { label: 'Busy', color: 'text-red-500' },
 }
 
 interface TeamMemberCardProps {

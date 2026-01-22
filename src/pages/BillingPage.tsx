@@ -62,13 +62,11 @@ export function BillingPage() {
                     title="Pending Amount"
                     value={formatCurrency(pendingAmount)}
                     icon={CreditCard}
-                    description="Total amount due"
                 />
                 <MetricCard
                     title="Total Paid (All Time)"
                     value={formatCurrency(totalPaid)}
                     icon={DollarSign}
-                    description="Lifetime payments"
                 />
             </div>
 

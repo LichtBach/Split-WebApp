@@ -54,7 +54,6 @@ const priorityConfig = {
 
 export function BlockerItem({
     blocker,
-    onResolve,
     onViewDetails,
     compact = false
 }: {

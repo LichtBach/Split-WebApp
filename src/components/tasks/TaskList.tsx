@@ -3,15 +3,11 @@ import {
     Calendar,
     Clock,
     ChevronDown,
-    ChevronRight,
-    CheckCircle2,
-    Circle as CircleIcon,
-    AlertCircle,
-    Pause
+    ChevronRight
 } from 'lucide-react'
 import { Card, CardContent } from '@/components/ui/card'
 import { TaskStatusBadge, TaskPriorityBadge } from './TaskStatusBadge'
-import type { Task, TaskStatus } from '@/types'
+import type { Task } from '@/types'
 import { formatDate, formatRelativeTime, formatDuration, cn } from '@/lib/utils'
 
 interface TaskItemProps {

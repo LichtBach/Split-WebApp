@@ -30,7 +30,7 @@ export function Header({ title, subtitle }: HeaderProps) {
     }
 
     const handleSettingsClick = () => {
-        navigate({ to: '/settings' })
+        navigate({ to: '/profile' })
     }
 
     return (
